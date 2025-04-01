@@ -272,3 +272,5 @@ if __name__ == "__main__":
         org=None,
         private=False
     )
+
+    # training logs:- https://modal.com/apps/model-merging/main/ap-U94j6dVXx260A9IBXF9IJR?start=1743441282.824&end=1743527682.824&live=true&activeTab=logs

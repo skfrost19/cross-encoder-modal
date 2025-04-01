@@ -77,10 +77,8 @@ def validate():
     import os
     
     MODEL_PATH = "/root/longformer_crossencoder/all_mini_LM/reranker-MiniLM-L12-H384-uncased-msmarco-bce/final"
-    EVAL_DATASET_PATH = "/root/longformer_crossencoder/datasets/ms-marco-eval"
     
-    os.system(f"python cross_encoder/validate_model.py --model_path {MODEL_PATH} --eval_dataset {EVAL_DATASET_PATH} --batch_size 256")
-
+    os.system(f"python cross_encoder/validate_model.py --model_path {MODEL_PATH} --batch_size 512 --num_samples 2000")
 
 @app.local_entrypoint()
 def main():
