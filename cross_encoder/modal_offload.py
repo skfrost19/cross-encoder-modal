@@ -80,6 +80,20 @@ def validate():
     
     os.system(f"python cross_encoder/validate_model.py --model_path {MODEL_PATH} --batch_size 512 --num_samples 2000")
 
+@app.function(
+    gpu="A100-80GB:1",
+    timeout=7200,
+    secrets=[modal.Secret.from_name("my-huggingface-secret")],
+)
+def validate_separate():
+    import os
+    
+    MODEL_PATH = "/root/longformer_crossencoder/all_mini_LM/reranker-MiniLM-L12-H384-uncased-msmarco-bce/final"
+    EVAL_DATASET_PATH = "/root/longformer_crossencoder/datasets/ms-marco-eval"
+    OUTPUT_PATH = "/root/longformer_crossencoder/validation_results.json"
+    
+    os.system(f"python cross_encoder/validate_s_marco.py --model_path {MODEL_PATH} --eval_dataset {EVAL_DATASET_PATH} --output_path {OUTPUT_PATH} --batch_size 512")
+
 @app.local_entrypoint()
 def main():
     """
@@ -95,7 +109,8 @@ def main():
     # infer_model.remote()
     # evaluate.remote()
     # trainer.remote()
-    validate.remote()
+    # validate.remote()
+    validate_separate.remote()
 
 
 # To run this:
