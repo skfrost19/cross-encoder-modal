@@ -79,40 +79,50 @@ def parse_args():
 
 def run_trec_eval(qrels_path, run_path, metrics):
     """Run trec_eval and parse the results"""
-
-    # Convert underscores to dots for command-line arguments
-    # cmd_metrics = [metric.replace("_", ".") for metric in metrics]
     
-    cmd = ["./trec_eval/trec_eval", "-q", 
-           *[arg for metric in metrics for arg in ("-m", metric)],
-           qrels_path, run_path]
+    cmd = ["./trec_eval/trec_eval", "-q", qrels_path, run_path]
     
     result = subprocess.run(cmd, capture_output=True, text=True, check=True)
     print("Result of trec_eval:")
     print("*************************************************************")
     print(result.stdout)
+    print("*************************************************************")
+    print("Error of trec_eval:")
+    print("*************************************************************")
+    print(result.stderr)
     print("*************************************************************")    
     # Parse results
     lines = result.stdout.strip().split('\n')
     results = {}
     
     for line in lines:
-        parts = line.split()
-        if len(parts) != 3:
+        line = line.strip()
+        if not line:
             continue
+        # Split into max three parts to handle any unexpected spaces
+        parts = line.split(maxsplit=2)
+        if len(parts) != 3:
+            continue  # Skip lines that don't split into exactly three parts
             
         metric, qid, value = parts
         
-        if qid == 'all':
-            if metric not in results:
-                results[metric] = {}
-            results[metric]['all'] = float(value)
-        else:
-            if metric not in results:
-                results[metric] = {}
-            results[metric][qid] = float(value)
+        try:
+            value = float(value)
+        except ValueError:
+            continue  # Skip if conversion to float fails
+        
+        if metric not in results:
+            results[metric] = {}
+        results[metric][qid] = value
     
-    return results
+
+    avg_results = {}
+    for metric in results:
+        if metric not in avg_results:
+            avg_results[metric] = {}
+        avg_results[metric]['all'] = np.mean(list(results[metric].values()))
+
+    return avg_results, results
 
 def main():
     args = parse_args()
@@ -131,7 +141,9 @@ def main():
     model_short_name = args.model_name.split('/')[-1] if '/' in args.model_name else args.model_name
     
     # Always run BM25 retrieval (ignoring any pre-saved file)
-    results_path = os.path.join(args.results_dir, f"eval.{model_short_name}.{timestamp}.csv")
+    results_path = os.path.join(args.results_dir, f"eval.{model_short_name}.{timestamp}.json")
+    detailed_results_path = os.path.join(args.results_dir, f"eval.{model_short_name}.{timestamp}.detailed.json")
+
     model_path_local = args.results_dir.replace("/results", "")
     
     # Ensure the directory exists
@@ -225,25 +237,22 @@ def main():
     qrels_path = dataset.qrels_path()
     
     try:
-        results = run_trec_eval(qrels_path, reranked_run_path, metrics_to_use)
-        print(results)
+        avg_results, detailed_res = run_trec_eval(qrels_path, reranked_run_path, metrics_to_use)
         
-        # Save only the final evaluation results in csv format
+        # save both the results
         with open(results_path, "w") as f:
-            f.write("Metric,Score\n")
-            for metric in sorted(results.keys()):
-                if 'all' in results[metric]:
-                    f.write(f"{metric},{results[metric]['all']}\n")
-        f.close()
-        
+            json.dump(avg_results, f, indent=4)
+        with open(detailed_results_path, "w") as f:
+            json.dump(detailed_res, f, indent=2)
         
         print("\nEvaluation results:")
         print(f"{'Metric':<20} {'Score':<10}")
         print("-" * 30)
-        for metric in sorted(results.keys()):
-            if 'all' in results[metric]:
-                print(f"{metric:<20} {results[metric]['all']:<10.4f}")
-        print(f"\nDetailed results saved to {results_path}")
+        for metric in sorted(avg_results.keys()):
+            if 'all' in avg_results[metric]:
+                print(f"{metric:<20} {avg_results[metric]['all']:<10.4f}")
+        print(f"\nResults saved to {results_path}")
+        print(f"Detailed results saved to {detailed_results_path}")
         sys.exit(0)
         
     except subprocess.CalledProcessError as e:
