@@ -12,6 +12,7 @@ from datetime import datetime
 from sentence_transformers import CrossEncoder
 from pyserini.search.lucene import LuceneSearcher
 from tqdm import tqdm
+import time
 
 # Define all available trec_eval metrics with correct naming
 TREC_EVAL_METRICS = [
@@ -79,8 +80,8 @@ def parse_args():
 
 def run_trec_eval(qrels_path, run_path, metrics):
     """Run trec_eval and parse the results"""
-    
-    cmd = ["./trec_eval/trec_eval", "-q", qrels_path, run_path]
+
+    cmd = ["./trec_eval/trec_eval", "-m","all_trec", qrels_path, run_path]
     
     result = subprocess.run(cmd, capture_output=True, text=True, check=True)
     print("Result of trec_eval:")
@@ -99,30 +100,25 @@ def run_trec_eval(qrels_path, run_path, metrics):
         line = line.strip()
         if not line:
             continue
-        # Split into max three parts to handle any unexpected spaces
-        parts = line.split(maxsplit=2)
+            
+        parts = line.split()
         if len(parts) != 3:
-            continue  # Skip lines that don't split into exactly three parts
+            continue
             
         metric, qid, value = parts
         
+        # Only keep the 'all' summary values
+        if qid != 'all':
+            continue
+            
         try:
             value = float(value)
+            results[metric] = value
         except ValueError:
-            continue  # Skip if conversion to float fails
-        
-        if metric not in results:
-            results[metric] = {}
-        results[metric][qid] = value
+            # Keep non-numeric values as strings
+            results[metric] = value
     
-
-    avg_results = {}
-    for metric in results:
-        if metric not in avg_results:
-            avg_results[metric] = {}
-        avg_results[metric]['all'] = np.mean(list(results[metric].values()))
-
-    return avg_results, results
+    return results, None
 
 def main():
     args = parse_args()
@@ -184,11 +180,14 @@ def main():
     print("Loading msmarco-passage docs_store...")
     docs = ir_datasets.load("msmarco-passage").docs_store()
     
-    if len(os.listdir(reranked_dir)) > 0:
-        print(f"Reranked run file(s) already exists, loading...")
-        reranked_run_path = sorted(Path(reranked_dir).glob(f"reranked.{model_short_name}.*.trec"))[-1]
-
-    else:
+    try:
+        if len(os.listdir(reranked_dir)) > 0:
+            print(f"Reranked run file(s) already exists, loading...")
+            reranked_run_path = sorted(Path(reranked_dir).glob(f"reranked.{model_short_name}.*.trec"))[-1]
+        else:
+            raise FileNotFoundError
+    except:
+        print(f"Reranked run file(s) do not exist, proceeding with reranking.")
         # Rerank BM25 results using the cross-encoder
         print("Reranking with cross-encoder...")
         # Initialize cross-encoder model
@@ -240,19 +239,13 @@ def main():
         avg_results, detailed_res = run_trec_eval(qrels_path, reranked_run_path, metrics_to_use)
         
         # save both the results
-        with open(results_path, "w") as f:
-            json.dump(avg_results, f, indent=4)
-        with open(detailed_results_path, "w") as f:
-            json.dump(detailed_res, f, indent=2)
+        if avg_results:
+            with open(results_path, "w") as f:
+                json.dump(avg_results, f, indent=2)
         
-        print("\nEvaluation results:")
-        print(f"{'Metric':<20} {'Score':<10}")
-        print("-" * 30)
-        for metric in sorted(avg_results.keys()):
-            if 'all' in avg_results[metric]:
-                print(f"{metric:<20} {avg_results[metric]['all']:<10.4f}")
-        print(f"\nResults saved to {results_path}")
-        print(f"Detailed results saved to {detailed_results_path}")
+        if detailed_res:
+            with open(detailed_results_path, "w") as f:
+                json.dump(detailed_res, f, indent=2)
         sys.exit(0)
         
     except subprocess.CalledProcessError as e:
