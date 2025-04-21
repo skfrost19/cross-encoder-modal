@@ -1,0 +1,73 @@
+Please write a paper as in research paper as i am trying to train a cross encoder using the senetence piece cross encoder trainer and i have changed the optmizer to Lion and adamW and i have evaluated on trec dl - 2019, i am attaching the complete eval results. Please write in IEEE format. I have used modal for the GPU and other resouces needed for the experiments (gpu, cpu, storage, networks etc.) (https://modal.com/). Always use proper citations.
+
+The models i have used is 1. Alibaba-NLP/gte-multilingual-base and 2. microsoft/MiniLM-L12-H384-uncased, 3. answerdotai/ModernBERT-base from huggingface
+
+The eval is done using tec eval (https://github.com/usnistgov/trec_eval/tree/main) and MRR@10 is calculated on ms-marco dev dataset (https://huggingface.co/datasets/microsoft/ms_marco).
+
+For all the models i have trained a cros encoder using 2 optimizer adamW and Lion.
+miniLm is a very tiny model and have a little context length however gte and ModernBERT has 8192 context window, which is good for longer passages.
+experiment settings
+gte and MiniLM both used simple training with same learning rate of 2e-5 with no scheduler, However ModernBERT used 2e-6 as a learning rate and cosineAneling scheduler, which gives best reults.
+
+Evaluation Results on TREC-DL 2019 and MS-MARCO(DEV) Passage Ranking
+
+| Base Model           | Optimizer | Epoch | NDCG@10  | MAP     | MRR@10  | Recall@10 | R-Prec  | P@10   |
+|----------------------|-----------|-------|----------|---------|---------|------------|---------|--------|
+| MiniLM-L12-H384      | AdamW     | 1     | 0.7008   | 0.4814  | 0.5828  | 0.1712     | 0.4899  | 0.8047 |
+|                      |           | 2     | 0.7094   | 0.4891  | 0.5818  | 0.1715     | 0.5017  | 0.8093 |
+|                      |           | 3     | 0.7127   | 0.4908  | 0.5826  | 0.1706     | 0.4962  | 0.8023 |
+| MiniLM-L12-H384      | Lion      | 1     | 0.7031   | 0.4858  | 0.5890  | 0.1698     | 0.4904  | 0.8070 |
+|                      |           | 2     | 0.6916   | 0.4755  | 0.5942  | 0.1724     | 0.5041  | 0.8116 |
+|                      |           | 3     | 0.6808   | 0.4706  | **0.5988** | 0.1701  | 0.4923  | 0.8023 |
+| GTE-multilingual-base| AdamW     | 1     | 0.7224   | 0.5005  | 0.5940  | 0.1733     | 0.4957  | 0.8140 |
+|                      |           | 2     | 0.7203   | 0.4999  | 0.5942  | **0.1733** | 0.5067  | 0.8163 |
+|                      |           | 3     | 0.6902   | 0.4899  | 0.5972  | 0.1730     | 0.5069  | 0.8140 |
+| GTE-multilingual-base| Lion      | 1     | 0.6785   | 0.4754  | 0.5854  | 0.1684     | 0.4849  | 0.7953 |
+|                      |           | 2     | 0.6909   | 0.4921  | 0.5957  | 0.1721     | 0.5053  | 0.8140 |
+|                      |           | 3     | 0.6904   | 0.4912  | 0.5931  | 0.1719     | 0.5041  | 0.8093 |
+| Modern-BERT-base     | AdamW     | 1     | 0.7105   | 0.5066  | 0.5865  | 0.1678     | 0.5161  | 0.8163 |
+|                      |           | 2     | 0.6839   | 0.4893  | 0.5885  | 0.1634     | 0.4946  | 0.7814 |
+|                      |           | 3     | 0.6959   | 0.4971  | 0.5916  | 0.1623     | 0.5116  | 0.7860 |
+| Modern-BERT-base     | Lion      | 1     | 0.7142   | **0.5121** | 0.5834  | 0.1689  | 0.5148  | 0.8163 |
+|                      |           | 2     | **0.7225** | 0.5115  | **0.5907** | 0.1732 | **0.5183** | 0.8209 |
+|                      |           | 3     | 0.7051   | 0.5020  | **0.5988** | 0.1722 | 0.5102  | **0.8256** |
+
+
+We have graph comparing (ModernBERT) eval-loss, train-loss, learning_rate, grad.
+Also we have photo of cross_encoder architecture image.
+
+Here are some training arguments
+train_batch_size = 64
+num_epochs = 3
+dataset_size = 2_000_000
+num_train_epochs=num_epochs,
+per_device_train_batch_size=train_batch_size,
+per_device_eval_batch_size=train_batch_size,
+learning_rate=2e-5,
+warmup_ratio=0.1,
+fp16=False, 
+bf16=True,
+load_best_model_at_end=True,
+metric_for_best_model="eval_NanoBEIR_R100_mean_ndcg@10",
+# Optional tracking/debugging parameters:
+eval_strategy="epoch",
+save_strategy="epoch",
+logging_steps=4000,
+logging_first_step=True,
+run_name=run_name,  # Will be used in W&B if `wandb` is installed
+seed=12,
+dataloader_num_workers=4,
+resume_from_checkpoint=True
+scheduler = CosineAnnealingLR(optimizer, T_max=total_steps)
+optimizer = Lion(
+        model.parameters(),
+        lr=args.learning_rate,
+        weight_decay=0.01,
+        betas=(0.9, 0.99)  # Default Lion betas
+    )
+
+    optimizer_adamW = torch.optim.AdamW(
+        model.parameters(),
+        lr=args.learning_rate,
+        weight_decay=0.01,
+    )
