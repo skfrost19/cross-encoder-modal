@@ -14,6 +14,9 @@
 \usepackage{hyperref} % For clickable links (optional)
 \usepackage{float}
 \usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{tabularx}
 \usepackage{caption}
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
@@ -250,7 +253,7 @@ Table \ref{tab:main_results} presents the evaluation results for all configurati
 \bottomrule
 \end{tabular}
 \vspace{1em}\\
-\footnotesize{* MRR@10 is calculated on the MS MARCO v1.1 passage dataset development split. All other metrics are calculated on TREC DL 2019. Best result for each metric highlighted. (*Note: MiniLM+Lion also achieved 0.5988 MRR@10 at epoch 3.)}
+\footnotesize{* MRR@10 is calculated on the MS MARCO v1.1 passage dataset development split. All other metrics are calculated on TREC DL 2019. Best result for each metric highlighted. (*Note: MiniLM+Lion also achieved 0.5988 MRR@10 at epoch 3, (see Appendix A for complete metrics).)}
 \end{table*}
 
 \subsection{Optimizer Performance Comparison}
@@ -445,5 +448,298 @@ The authors acknowledge Modal Labs (\url{https://modal.com/}) for providing the 
 % --- Bibliography ---
 \bibliographystyle{IEEEtran}
 \bibliography{IEEEabrv,references} 
+
+\newpage
+\appendix
+\section*{Appendices}
+
+\section{Detailed Evaluation Metrics}
+\label{app:metrics}
+
+This appendix presents comprehensive evaluation metrics for all model configurations tested in our experiments. While the main paper focuses on key performance indicators, these detailed tables provide additional insights into model behavior across various retrieval effectiveness measures.
+
+\subsection{Primary Ranking Metrics}
+Table~\ref{tab:primary_metrics} presents the main effectiveness metrics including MAP, NDCG@10, MRR@10, and Precision@10 for all tested configurations.
+
+\begin{table*}[t]
+\centering
+\caption{Primary ranking metrics comparing cross-encoder models across training epochs.}
+\label{tab:primary_metrics}
+\small
+\begin{tabular}{llcccccccc}
+\toprule
+\textbf{Model} & \textbf{Optimizer} & \textbf{Epoch} & \textbf{MAP} & \textbf{NDCG@10} & \textbf{MRR@10} & \textbf{P@10} & \textbf{Recip\_Rank} & \textbf{R-Prec} & \textbf{bpref} \\
+\midrule
+\multirow{6}{*}{GTE} & \multirow{3}{*}{AdamW} 
+ & 1 & 0.5005 & 0.7224 & 0.5940 & 0.8116 & 0.9814 & 0.4964 & 0.6068 \\
+ & & 2 & 0.4999 & 0.7203 & 0.5942 & 0.8256 & 0.9523 & 0.5018 & 0.6074 \\
+ & & 3 & 0.4899 & 0.6902 & 0.5972 & 0.8093 & 0.9279 & 0.5017 & 0.6075 \\
+\cmidrule{2-10}
+ & \multirow{3}{*}{Lion} 
+ & 1 & 0.4794 & 0.6970 & 0.5854 & 0.7884 & 0.9612 & 0.4814 & 0.6079 \\
+ & & 2 & 0.4577 & 0.6792 & 0.5957 & 0.7721 & 0.9477 & 0.4642 & 0.6013 \\
+ & & 3 & 0.4521 & 0.6571 & 0.5931 & 0.7488 & 0.9399 & 0.4662 & 0.5972 \\
+\midrule
+\multirow{6}{*}{MiniLM} & \multirow{3}{*}{AdamW} 
+ & 1 & 0.4814 & 0.7008 & 0.5828 & 0.8000 & 0.9465 & 0.4884 & 0.6016 \\
+ & & 2 & 0.4891 & 0.7094 & 0.5818 & 0.8116 & 0.9814 & 0.4916 & 0.6030 \\
+ & & 3 & 0.4908 & 0.7127 & 0.5826 & 0.8116 & 0.9806 & 0.4943 & 0.6048 \\
+\cmidrule{2-10}
+ & \multirow{3}{*}{Lion} 
+ & 1 & 0.4858 & 0.7031 & 0.5890 & 0.8140 & 0.9457 & 0.4952 & 0.6010 \\
+ & & 2 & 0.4755 & 0.6916 & 0.5942 & 0.8070 & 0.9496 & 0.4803 & 0.5992 \\
+ & & 3 & 0.4706 & 0.6808 & \textbf{0.5988} & 0.8070 & 0.9419 & 0.4809 & 0.5994 \\
+\midrule
+\multirow{6}{*}{ModernBERT} & \multirow{3}{*}{AdamW} 
+ & 1 & 0.5066 & 0.7105 & 0.5866 & 0.8163 & 0.9574 & 0.5161 & 0.6139 \\
+ & & 2 & 0.4893 & 0.6839 & 0.5886 & 0.7814 & 0.9341 & 0.4946 & 0.6152 \\
+ & & 3 & 0.4971 & 0.6959 & 0.5916 & 0.7860 & 0.9523 & 0.5116 & 0.6128 \\
+\cmidrule{2-10}
+ & \multirow{3}{*}{Lion} 
+ & 1 & 0.5121 & 0.7142 & 0.5834 & 0.8163 & 0.9593 & 0.5148 & 0.6140 \\
+ & & 2 & \textbf{0.5115} & \textbf{0.7225} & 0.5908 & \textbf{0.8209} & \textbf{0.9767} & \textbf{0.5183} & \textbf{0.6156} \\
+ & & 3 & 0.5020 & 0.7051 & 0.5989 & 0.8256 & 0.9322 & 0.5102 & 0.6151 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Precision and Recall Analysis}
+Tables~\ref{tab:precision_metrics} and~\ref{tab:recall_metrics} provide detailed precision and recall values at different cutoff thresholds, revealing the models' behavior at various result list depths.
+
+\begin{table*}[t]
+\centering
+\caption{Precision metrics at different cutoff levels.}
+\label{tab:precision_metrics}
+\small
+\begin{tabular}{llccccccc}
+\toprule
+\textbf{Model} & \textbf{Config} & \textbf{P@5} & \textbf{P@10} & \textbf{P@15} & \textbf{P@20} & \textbf{P@30} & \textbf{P@100} & \textbf{P@200} \\
+\midrule
+\multirow{6}{*}{GTE} & AdamW-1 & 0.8930 & 0.8116 & 0.7783 & 0.7372 & 0.6419 & 0.3965 & 0.2664 \\
+ & AdamW-2 & 0.8698 & 0.8256 & 0.7752 & 0.7326 & 0.6395 & 0.3963 & 0.2641 \\
+ & AdamW-3 & 0.8558 & 0.8093 & 0.7550 & 0.7128 & 0.6349 & 0.3942 & 0.2634 \\
+ & Lion-1 & 0.8558 & 0.7884 & 0.7364 & 0.7070 & 0.6318 & 0.3893 & 0.2591 \\
+ & Lion-2 & 0.8326 & 0.7721 & 0.7302 & 0.6802 & 0.6054 & 0.3740 & 0.2528 \\
+ & Lion-3 & 0.8140 & 0.7488 & 0.7147 & 0.6907 & 0.6140 & 0.3740 & 0.2543 \\
+\midrule
+\multirow{6}{*}{MiniLM} & AdamW-1 & 0.8698 & 0.8000 & 0.7628 & 0.7151 & 0.6450 & 0.3870 & 0.2564 \\
+ & AdamW-2 & 0.8698 & 0.8116 & 0.7674 & 0.7186 & 0.6488 & 0.3895 & 0.2580 \\
+ & AdamW-3 & 0.8558 & 0.8116 & 0.7705 & 0.7256 & 0.6442 & 0.3891 & 0.2580 \\
+ & Lion-1 & 0.8651 & 0.8140 & 0.7783 & 0.7233 & 0.6434 & 0.3847 & 0.2583 \\
+ & Lion-2 & 0.8744 & 0.8070 & 0.7643 & 0.7081 & 0.6264 & 0.3821 & 0.2530 \\
+ & Lion-3 & 0.8465 & 0.8070 & 0.7442 & 0.6930 & 0.6194 & 0.3809 & 0.2547 \\
+\midrule
+\multirow{6}{*}{ModernBERT} & AdamW-1 & 0.8651 & 0.8163 & 0.7767 & 0.7349 & 0.6612 & 0.3993 & 0.2679 \\
+ & AdamW-2 & 0.8605 & 0.7814 & 0.7333 & 0.6953 & 0.6333 & 0.3912 & 0.2658 \\
+ & AdamW-3 & 0.8465 & 0.7860 & 0.7411 & 0.6988 & 0.6450 & 0.3958 & 0.2655 \\
+ & Lion-1 & 0.8791 & 0.8163 & 0.7783 & 0.7314 & 0.6574 & 0.4033 & 0.2691 \\
+ & Lion-2 & 0.8698 & \textbf{0.8209} & 0.7674 & 0.7279 & 0.6574 & \textbf{0.4016} & 0.2678 \\
+ & Lion-3 & 0.8651 & 0.8256 & 0.7504 & 0.7093 & 0.6488 & 0.3967 & 0.2651 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\caption{Recall metrics at different cutoff levels.}
+\label{tab:recall_metrics}
+\small
+\begin{tabular}{llcccccccc}
+\toprule
+\textbf{Model} & \textbf{Config} & \textbf{Recall@5} & \textbf{Recall@10} & \textbf{Recall@15} & \textbf{Recall@20} & \textbf{Recall@30} & \textbf{Recall@100} & \textbf{Recall@200} & \textbf{Recall@500} \\
+\midrule
+\multirow{6}{*}{GTE} & AdamW-1 & 0.1051 & 0.1689 & 0.2286 & 0.2815 & 0.3376 & 0.5501 & 0.6573 & 0.7161 \\
+ & AdamW-2 & 0.1041 & 0.1760 & 0.2295 & 0.2753 & 0.3366 & 0.5538 & 0.6511 & 0.7130 \\
+ & AdamW-3 & 0.1051 & 0.1715 & 0.2256 & 0.2692 & 0.3376 & 0.5489 & 0.6501 & 0.7102 \\
+ & Lion-1 & 0.1002 & 0.1614 & 0.2158 & 0.2684 & 0.3369 & 0.5401 & 0.6384 & 0.7101 \\
+ & Lion-2 & 0.0973 & 0.1610 & 0.2151 & 0.2545 & 0.3153 & 0.5211 & 0.6273 & 0.7105 \\
+ & Lion-3 & 0.0929 & 0.1542 & 0.2070 & 0.2574 & 0.3221 & 0.5181 & 0.6227 & 0.7124 \\
+\midrule
+\multirow{6}{*}{MiniLM} & AdamW-1 & 0.1027 & 0.1652 & 0.2225 & 0.2645 & 0.3362 & 0.5426 & 0.6396 & 0.7187 \\
+ & AdamW-2 & 0.1013 & 0.1668 & 0.2239 & 0.2676 & 0.3401 & 0.5446 & 0.6417 & 0.7223 \\
+ & AdamW-3 & 0.1007 & 0.1702 & 0.2257 & 0.2719 & 0.3386 & 0.5427 & 0.6396 & 0.7189 \\
+ & Lion-1 & 0.1022 & 0.1688 & 0.2257 & 0.2704 & 0.3400 & 0.5338 & 0.6413 & 0.7154 \\
+ & Lion-2 & 0.1025 & 0.1641 & 0.2200 & 0.2613 & 0.3289 & 0.5338 & 0.6268 & 0.7145 \\
+ & Lion-3 & 0.1001 & 0.1676 & 0.2156 & 0.2542 & 0.3253 & 0.5249 & 0.6341 & 0.7143 \\
+\midrule
+\multirow{6}{*}{ModernBERT} & AdamW-1 & 0.0995 & 0.1678 & 0.2245 & 0.2731 & 0.3475 & 0.5520 & 0.6539 & 0.7224 \\
+ & AdamW-2 & 0.0979 & 0.1634 & 0.2148 & 0.2603 & 0.3321 & 0.5443 & 0.6520 & 0.7198 \\
+ & AdamW-3 & 0.1019 & 0.1623 & 0.2184 & 0.2627 & 0.3380 & 0.5476 & 0.6461 & 0.7198 \\
+ & Lion-1 & 0.1052 & 0.1689 & 0.2276 & 0.2733 & 0.3431 & 0.5542 & 0.6553 & 0.7233 \\
+ & Lion-2 & 0.1048 & \textbf{0.1732} & 0.2245 & 0.2699 & 0.3469 & \textbf{0.5608} & \textbf{0.6553} & \textbf{0.7233} \\
+ & Lion-3 & 0.1037 & 0.1722 & 0.2185 & 0.2640 & 0.3425 & 0.5570 & 0.6525 & 0.7194 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{NDCG and MAP Metrics}
+Tables~\ref{tab:ndcg_metrics} and~\ref{tab:map_metrics} provide a more granular view of ranking quality through normalized discounted cumulative gain and mean average precision at multiple cutoff points.
+
+\begin{table*}[t]
+\centering
+\caption{NDCG metrics at different cutoff levels.}
+\label{tab:ndcg_metrics}
+\small
+\begin{tabular}{llccccccc}
+\toprule
+\textbf{Model} & \textbf{Config} & \textbf{NDCG} & \textbf{NDCG@5} & \textbf{NDCG@10} & \textbf{NDCG@20} & \textbf{NDCG@30} & \textbf{NDCG@100} & \textbf{NDCG@500} \\
+\midrule
+\multirow{6}{*}{GTE} & AdamW-1 & 0.6987 & 0.7567 & 0.7224 & 0.7071 & 0.6802 & 0.6591 & 0.6897 \\
+ & AdamW-2 & 0.6949 & 0.7343 & 0.7203 & 0.6967 & 0.6687 & 0.6550 & 0.6845 \\
+ & AdamW-3 & 0.6848 & 0.7080 & 0.6902 & 0.6703 & 0.6558 & 0.6426 & 0.6733 \\
+ & Lion-1 & 0.6865 & 0.7229 & 0.6970 & 0.6786 & 0.6638 & 0.6433 & 0.6750 \\
+ & Lion-2 & 0.6772 & 0.7008 & 0.6792 & 0.6580 & 0.6405 & 0.6248 & 0.6661 \\
+ & Lion-3 & 0.6674 & 0.6801 & 0.6571 & 0.6450 & 0.6310 & 0.6124 & 0.6573 \\
+\midrule
+\multirow{6}{*}{MiniLM} & AdamW-1 & 0.6857 & 0.7207 & 0.7008 & 0.6833 & 0.6698 & 0.6402 & 0.6778 \\
+ & AdamW-2 & 0.6910 & 0.7345 & 0.7094 & 0.6908 & 0.6779 & 0.6471 & 0.6843 \\
+ & AdamW-3 & 0.6910 & 0.7244 & 0.7127 & 0.6949 & 0.6749 & 0.6474 & 0.6834 \\
+ & Lion-1 & 0.6841 & 0.7163 & 0.7031 & 0.6829 & 0.6667 & 0.6369 & 0.6752 \\
+ & Lion-2 & 0.6790 & 0.7099 & 0.6916 & 0.6706 & 0.6541 & 0.6295 & 0.6692 \\
+ & Lion-3 & 0.6770 & 0.6837 & 0.6808 & 0.6584 & 0.6479 & 0.6268 & 0.6667 \\
+\midrule
+\multirow{6}{*}{ModernBERT} & AdamW-1 & 0.6937 & 0.7171 & 0.7105 & 0.6936 & 0.6831 & 0.6555 & 0.6877 \\
+ & AdamW-2 & 0.6869 & 0.7112 & 0.6839 & 0.6701 & 0.6589 & 0.6431 & 0.6795 \\
+ & AdamW-3 & 0.6910 & 0.7156 & 0.6959 & 0.6729 & 0.6699 & 0.6497 & 0.6832 \\
+ & Lion-1 & 0.6984 & 0.7285 & 0.7142 & 0.6991 & 0.6825 & 0.6610 & 0.6925 \\
+ & Lion-2 & \textbf{0.7018} & \textbf{0.7381} & \textbf{0.7225} & \textbf{0.6978} & \textbf{0.6852} & \textbf{0.6638} & \textbf{0.6955} \\
+ & Lion-3 & 0.6930 & 0.7165 & 0.7051 & 0.6797 & 0.6722 & 0.6542 & 0.6857 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\caption{MAP metrics at different cutoff levels and related metrics.}
+\label{tab:map_metrics}
+\small
+\begin{tabular}{llccccccc}
+\toprule
+\textbf{Model} & \textbf{Config} & \textbf{MAP} & \textbf{MAP@10} & \textbf{MAP@20} & \textbf{MAP@30} & \textbf{MAP@100} & \textbf{infAP} & \textbf{gm\_map} \\
+\midrule
+\multirow{6}{*}{GTE} & AdamW-1 & 0.5005 & 0.1601 & 0.2499 & 0.2915 & 0.4226 & 0.5005 & 0.4143 \\
+ & AdamW-2 & 0.4999 & 0.1632 & 0.2463 & 0.2904 & 0.4247 & 0.4999 & 0.4109 \\
+ & AdamW-3 & 0.4899 & 0.1555 & 0.2350 & 0.2827 & 0.4136 & 0.4899 & 0.3995 \\
+ & Lion-1 & 0.4794 & 0.1468 & 0.2274 & 0.2771 & 0.4039 & 0.4794 & 0.3878 \\
+ & Lion-2 & 0.4577 & 0.1464 & 0.2201 & 0.2631 & 0.3810 & 0.4577 & 0.3623 \\
+ & Lion-3 & 0.4521 & 0.1378 & 0.2145 & 0.2589 & 0.3747 & 0.4521 & 0.3525 \\
+\midrule
+\multirow{6}{*}{MiniLM} & AdamW-1 & 0.4814 & 0.1479 & 0.2272 & 0.2809 & 0.4062 & 0.4814 & 0.3920 \\
+ & AdamW-2 & 0.4891 & 0.1531 & 0.2329 & 0.2882 & 0.4148 & 0.4891 & 0.3975 \\
+ & AdamW-3 & 0.4908 & 0.1553 & 0.2383 & 0.2895 & 0.4159 & 0.4908 & 0.3972 \\
+ & Lion-1 & 0.4858 & 0.1534 & 0.2344 & 0.2845 & 0.4087 & 0.4858 & 0.3919 \\
+ & Lion-2 & 0.4755 & 0.1492 & 0.2254 & 0.2735 & 0.4006 & 0.4755 & 0.3823 \\
+ & Lion-3 & 0.4706 & 0.1507 & 0.2207 & 0.2690 & 0.3940 & 0.4706 & 0.3736 \\
+\midrule
+\multirow{6}{*}{ModernBERT} & AdamW-1 & 0.5066 & 0.1535 & 0.2389 & 0.2942 & 0.4274 & 0.5066 & 0.4045 \\
+ & AdamW-2 & 0.4893 & 0.1493 & 0.2280 & 0.2803 & 0.4097 & 0.4893 & 0.3875 \\
+ & AdamW-3 & 0.4971 & 0.1504 & 0.2304 & 0.2848 & 0.4192 & 0.4971 & 0.3988 \\
+ & Lion-1 & 0.5121 & 0.1577 & 0.2448 & 0.2979 & 0.4347 & 0.5121 & 0.4162 \\
+ & Lion-2 & \textbf{0.5115} & \textbf{0.1616} & \textbf{0.2417} & \textbf{0.2973} & \textbf{0.4333} & \textbf{0.5115} & \textbf{0.4157} \\
+ & Lion-3 & 0.5020 & 0.1583 & 0.2333 & 0.2892 & 0.4239 & 0.5020 & 0.4071 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Advanced Retrieval Metrics}
+Table~\ref{tab:interpolated_precision} presents R-Precision and interpolated precision metrics that provide insights into precision at different recall levels.
+
+\begin{table*}[t]
+\centering
+\caption{R-Precision and interpolated precision metrics.}
+\label{tab:interpolated_precision}
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llccccccccc}
+\toprule
+\textbf{Model} & \textbf{Config} & \textbf{R-Prec} & \textbf{R-Prec@0.8} & \textbf{R-Prec@1.0} & \textbf{iprec@0.0} & \textbf{iprec@0.1} & \textbf{iprec@0.3} & \textbf{iprec@0.5} & \textbf{iprec@0.7} & \textbf{iprec@0.9} \\
+\midrule
+\multirow{6}{*}{GTE} & AdamW-1 & 0.4964 & 0.5617 & 0.4964 & 0.9841 & 0.8741 & 0.7176 & 0.5037 & 0.3295 & 0.1439 \\
+ & AdamW-2 & 0.5018 & 0.5644 & 0.5018 & 0.9730 & 0.8796 & 0.7093 & 0.5027 & 0.3339 & 0.1399 \\
+ & AdamW-3 & 0.5017 & 0.5616 & 0.5017 & 0.9611 & 0.8614 & 0.6942 & 0.4980 & 0.3404 & 0.1395 \\
+ & Lion-1 & 0.4814 & 0.5419 & 0.4814 & 0.9667 & 0.8426 & 0.6601 & 0.4907 & 0.3576 & 0.1233 \\
+ & Lion-2 & 0.4642 & 0.5238 & 0.4642 & 0.9682 & 0.8377 & 0.6283 & 0.4549 & 0.3144 & 0.1182 \\
+ & Lion-3 & 0.4662 & 0.5236 & 0.4662 & 0.9519 & 0.8008 & 0.6289 & 0.4653 & 0.3158 & 0.1218 \\
+\midrule
+\multirow{6}{*}{MiniLM} & AdamW-1 & 0.4884 & 0.5502 & 0.4884 & 0.9637 & 0.8546 & 0.6592 & 0.4804 & 0.3474 & 0.1258 \\
+ & AdamW-2 & 0.4916 & 0.5523 & 0.4916 & 0.9821 & 0.8584 & 0.6614 & 0.4856 & 0.3537 & 0.1251 \\
+ & AdamW-3 & 0.4943 & 0.5611 & 0.4943 & 0.9817 & 0.8641 & 0.6724 & 0.4877 & 0.3469 & 0.1262 \\
+ & Lion-1 & 0.4952 & 0.5495 & 0.4952 & 0.9727 & 0.8613 & 0.6698 & 0.4836 & 0.3387 & 0.1326 \\
+ & Lion-2 & 0.4803 & 0.5335 & 0.4803 & 0.9728 & 0.8450 & 0.6441 & 0.4545 & 0.3422 & 0.1261 \\
+ & Lion-3 & 0.4809 & 0.5240 & 0.4809 & 0.9625 & 0.8511 & 0.6443 & 0.4543 & 0.3370 & 0.1278 \\
+\midrule
+\multirow{6}{*}{ModernBERT} & AdamW-1 & 0.5161 & 0.5804 & 0.5161 & 0.9688 & 0.8676 & 0.6739 & 0.5126 & 0.3858 & 0.1644 \\
+ & AdamW-2 & 0.4946 & 0.5492 & 0.4946 & 0.9583 & 0.8429 & 0.6547 & 0.4956 & 0.3741 & 0.1464 \\
+ & AdamW-3 & 0.5116 & 0.5638 & 0.5116 & 0.9614 & 0.8460 & 0.6781 & 0.5001 & 0.3774 & 0.1489 \\
+ & Lion-1 & 0.5148 & 0.5848 & 0.5148 & 0.9734 & 0.8767 & 0.6892 & 0.5212 & 0.3766 & 0.1566 \\
+ & Lion-2 & \textbf{0.5183} & \textbf{0.5830} & \textbf{0.5183} & \textbf{0.9901} & \textbf{0.8804} & \textbf{0.7052} & \textbf{0.5121} & 0.3853 & \textbf{0.1630} \\
+ & Lion-3 & 0.5102 & 0.5629 & 0.5102 & 0.9660 & 0.8487 & 0.6954 & 0.5021 & \textbf{0.3728} & 0.1597 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
+
+\subsection{User-Focused Metrics}
+Table~\ref{tab:success_metrics} presents metrics that focus on user satisfaction, including success rates and rank-biased precision.
+
+\begin{table*}[t]
+\centering
+\caption{Success and utility metrics.}
+\label{tab:success_metrics}
+\small
+\begin{tabular}{llccccc}
+\toprule
+\textbf{Model} & \textbf{Config} & \textbf{Success@1} & \textbf{Success@5} & \textbf{Success@10} & \textbf{Utility} & \textbf{RBP} \\
+\midrule
+\multirow{6}{*}{GTE} & AdamW-1 & 0.9767 & 1.0000 & 1.0000 & -869.1163 & 0.5638 \\
+ & AdamW-2 & 0.9302 & 1.0000 & 1.0000 & -869.1163 & 0.5576 \\
+ & AdamW-3 & 0.8837 & 1.0000 & 1.0000 & -869.1163 & 0.5418 \\
+ & Lion-1 & 0.9302 & 1.0000 & 1.0000 & -869.1163 & 0.5428 \\
+ & Lion-2 & 0.9070 & 1.0000 & 1.0000 & -869.1163 & 0.5279 \\
+ & Lion-3 & 0.9070 & 0.9767 & 1.0000 & -869.1163 & 0.5156 \\
+\midrule
+\multirow{6}{*}{MiniLM} & AdamW-1 & 0.9070 & 1.0000 & 1.0000 & -869.1163 & 0.5484 \\
+ & AdamW-2 & 0.9767 & 1.0000 & 1.0000 & -869.1163 & 0.5520 \\
+ & AdamW-3 & 0.9767 & 0.9767 & 1.0000 & -869.1163 & 0.5531 \\
+ & Lion-1 & 0.9070 & 1.0000 & 1.0000 & -869.1163 & 0.5499 \\
+ & Lion-2 & 0.9070 & 1.0000 & 1.0000 & -869.1163 & 0.5430 \\
+ & Lion-3 & 0.8837 & 1.0000 & 1.0000 & -869.1163 & 0.5346 \\
+\midrule
+\multirow{6}{*}{ModernBERT} & AdamW-1 & 0.9302 & 1.0000 & 1.0000 & -869.1163 & 0.5586 \\
+ & AdamW-2 & 0.8837 & 1.0000 & 1.0000 & -869.1163 & 0.5393 \\
+ & AdamW-3 & 0.9302 & 1.0000 & 1.0000 & -869.1163 & 0.5437 \\
+ & Lion-1 & 0.9302 & 1.0000 & 1.0000 & -869.1163 & 0.5587 \\
+ & Lion-2 & \textbf{0.9535} & 1.0000 & 1.0000 & -869.1163 & \textbf{0.5581} \\
+ & Lion-3 & 0.8837 & 1.0000 & 1.0000 & -869.1163 & 0.5475 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\section{Metric Definitions}
+\label{app:metric_defs}
+Table~\ref{tab:metric_definitions} provides formal definitions of all evaluation metrics used in our experimental analysis.
+
+\begin{table}[t]
+\centering
+\caption{Definitions of key evaluation metrics used in this paper.}
+\label{tab:metric_definitions}
+\footnotesize
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Metric} & \textbf{Definition} \\
+\midrule
+MAP & Mean Average Precision. The mean of average precision scores across all queries, where average precision is the average of precision values calculated at every position where a relevant document is retrieved. Range: [0,1]. \\
+NDCG@k & Normalized Discounted Cumulative Gain at rank k. Measures ranking quality with graded relevance and position-based discount. Range: [0,1]. \\
+P@k & Precision at k. The proportion of retrieved documents in the top k results that are relevant. Range: [0,1]. \\
+Recall@k & Recall at k. The proportion of all relevant documents that are retrieved in the top k results. Range: [0,1]. \\
+MRR@10 & Mean Reciprocal Rank at 10. Average of the reciprocal ranks of the first relevant document within the top 10 results. Range: [0,1]. \\
+R-Prec & R-Precision. Precision after R documents retrieved, where R is the number of relevant documents for the query. Range: [0,1]. \\
+bpref & Binary Preference. Measures ranking quality when relevance judgments are incomplete by considering known relevant/non-relevant document pairs. Range: [0,1]. \\
+Success@k & Indicates whether at least one relevant document is retrieved in the top k results (binary). Range: \{0,1\}. \\
+RBP & Rank-Biased Precision. Geometric discount-based measure of user satisfaction that models a user who browses through ranked results with a certain persistence. Range: [0,1]. \\
+Recip\_Rank & Reciprocal Rank. The reciprocal of the rank at which the first relevant document is retrieved. Range: (0,1]. \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \end{document}
