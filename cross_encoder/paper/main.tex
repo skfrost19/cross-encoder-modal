@@ -449,9 +449,7 @@ The authors acknowledge Modal Labs (\url{https://modal.com/}) for providing the 
 \bibliographystyle{IEEEtran}
 \bibliography{IEEEabrv,references} 
 
-\newpage
 \appendix
-\section*{Appendices}
 
 \section{Detailed Evaluation Metrics}
 \label{app:metrics}
@@ -460,6 +458,22 @@ This appendix presents comprehensive evaluation metrics for all model configurat
 
 \subsection{Primary Ranking Metrics}
 Table~\ref{tab:primary_metrics} presents the main effectiveness metrics including MAP, NDCG@10, MRR@10, and Precision@10 for all tested configurations.
+
+\subsection{Precision and Recall Analysis}
+Tables~\ref{tab:precision_metrics} and~\ref{tab:recall_metrics} provide detailed precision and recall values at different cutoff thresholds, revealing the models' behavior at various result list depths.
+
+\subsection{NDCG and MAP Metrics}
+Tables~\ref{tab:ndcg_metrics} and~\ref{tab:map_metrics} provide a more granular view of ranking quality through normalized discounted cumulative gain and mean average precision at multiple cutoff points.
+
+\subsection{Advanced Retrieval Metrics}
+Table~\ref{tab:interpolated_precision} presents R-Precision and interpolated precision metrics that provide insights into precision at different recall levels.
+
+\subsection{User-Focused Metrics}
+Table~\ref{tab:success_metrics} presents metrics that focus on user satisfaction, including success rates and rank-biased precision.
+
+\subsection{Metric Definitions}
+\label{app:metric_defs}
+Table~\ref{tab:metric_definitions} provides formal definitions of all evaluation metrics used in our experimental analysis.
 
 \begin{table*}[t]
 \centering
@@ -503,8 +517,7 @@ Table~\ref{tab:primary_metrics} presents the main effectiveness metrics includin
 \end{tabular}
 \end{table*}
 
-\subsection{Precision and Recall Analysis}
-Tables~\ref{tab:precision_metrics} and~\ref{tab:recall_metrics} provide detailed precision and recall values at different cutoff thresholds, revealing the models' behavior at various result list depths.
+
 
 \begin{table*}[t]
 \centering
@@ -572,8 +585,7 @@ Tables~\ref{tab:precision_metrics} and~\ref{tab:recall_metrics} provide detailed
 \end{tabular}
 \end{table*}
 
-\subsection{NDCG and MAP Metrics}
-Tables~\ref{tab:ndcg_metrics} and~\ref{tab:map_metrics} provide a more granular view of ranking quality through normalized discounted cumulative gain and mean average precision at multiple cutoff points.
+
 
 \begin{table*}[t]
 \centering
@@ -641,8 +653,7 @@ Tables~\ref{tab:ndcg_metrics} and~\ref{tab:map_metrics} provide a more granular 
 \end{tabular}
 \end{table*}
 
-\subsection{Advanced Retrieval Metrics}
-Table~\ref{tab:interpolated_precision} presents R-Precision and interpolated precision metrics that provide insights into precision at different recall levels.
+
 
 \begin{table*}[t]
 \centering
@@ -679,8 +690,7 @@ Table~\ref{tab:interpolated_precision} presents R-Precision and interpolated pre
 }
 \end{table*}
 
-\subsection{User-Focused Metrics}
-Table~\ref{tab:success_metrics} presents metrics that focus on user satisfaction, including success rates and rank-biased precision.
+
 
 \begin{table*}[t]
 \centering
@@ -715,9 +725,7 @@ Table~\ref{tab:success_metrics} presents metrics that focus on user satisfaction
 \end{tabular}
 \end{table*}
 
-\section{Metric Definitions}
-\label{app:metric_defs}
-Table~\ref{tab:metric_definitions} provides formal definitions of all evaluation metrics used in our experimental analysis.
+
 
 \begin{table}[t]
 \centering
