@@ -84,14 +84,7 @@ def run_trec_eval(qrels_path, run_path, metrics):
     cmd = ["./trec_eval/trec_eval", "-m","all_trec", qrels_path, run_path]
     
     result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-    print("Result of trec_eval:")
-    print("*************************************************************")
-    print(result.stdout)
-    print("*************************************************************")
-    print("Error of trec_eval:")
-    print("*************************************************************")
-    print(result.stderr)
-    print("*************************************************************")    
+
     # Parse results
     lines = result.stdout.strip().split('\n')
     results = {}
@@ -118,7 +111,45 @@ def run_trec_eval(qrels_path, run_path, metrics):
             # Keep non-numeric values as strings
             results[metric] = value
     
-    return results, None
+    # run again to get the detailed results
+    cmd = ["./trec_eval/trec_eval", "-m","all_trec", "-q", qrels_path, run_path]
+    
+    result_detailed = subprocess.run(cmd, capture_output=True, text=True, check=True)
+    print("Result of trec_eval:")
+    print("*************************************************************")
+    print(result_detailed.stdout)
+    print("*************************************************************")
+    print("Error of trec_eval:")
+    print("*************************************************************")
+    print(result_detailed.stderr)
+    print("*************************************************************")    
+    # Parse results
+    lines = result_detailed.stdout.strip().split('\n')
+    detailed_results = {}
+    
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+            
+        parts = line.split()
+        if len(parts) != 3:
+            continue
+            
+        metric, qid, value = parts
+        
+        # Only keep the 'all' summary values
+        if qid == 'all':
+            continue
+            
+        try:
+            value = float(value)
+            detailed_results[metric] = value
+        except ValueError:
+            # Keep non-numeric values as strings
+            detailed_results[metric] = value
+
+    return results, detailed_results
 
 def main():
     args = parse_args()
