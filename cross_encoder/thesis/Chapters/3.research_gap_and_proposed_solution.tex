@@ -1,0 +1,42 @@
+% Chapter Template
+
+\chapter{Research Gap \& Methodology} % Main chapter title
+
+\label{Chapter3} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{Chapter3}
+
+\section{Research Gap}
+
+While AdamW has become standard for transformer training, the Lion optimizer's effectiveness for cross-encoder IR tasks remains unexplored. Key gaps include:
+
+\begin{itemize}
+    \item \textbf{Novel Optimizer Evaluation}: Lion optimizer's memory efficiency and simplified updates haven't been systematically evaluated for cross-encoder training in IR contexts.
+    \item \textbf{Architecture-Optimizer Interaction}: Different transformer architectures (MiniLM, GTE, ModernBERT) may respond differently to optimization strategies.
+    \item \textbf{Training Efficiency Trade-offs}: Lion's claimed efficiency advantages need validation for computationally intensive cross-encoder training.
+    \item \textbf{Comprehensive IR Benchmarking}: Systematic evaluation across standard IR datasets (MS MARCO, TREC DL) with multiple metrics is needed.
+\end{itemize}
+
+\section{Methodology}
+
+This research systematically compares Lion and AdamW optimizers across three cross-encoder architectures for information retrieval tasks.
+
+\subsection{Model Selection}
+Three transformer architectures representing different efficiency-effectiveness points:
+\begin{itemize}
+    \item \textbf{MiniLM-L12-H384}: Compact model (384 hidden dims, 12 layers) for efficiency
+    \item \textbf{GTE-multilingual-base}: Multilingual model with 8192 token context support
+    \item \textbf{ModernBERT-base}: State-of-the-art encoder with RoPE, Flash Attention, GeGLU
+\end{itemize}
+
+\subsection{Experimental Design}
+\textbf{Training Setup}: Modal cloud platform with NVIDIA A100-80GB GPUs, batch size 16, 3 epochs, MS MARCO passage dataset.
+
+\textbf{Optimizer Configurations}:
+\begin{itemize}
+    \item \textbf{AdamW}: Learning rates 2e-5 (MiniLM, GTE), 2e-6 (ModernBERT), weight decay 0.01
+    \item \textbf{Lion}: Same learning rates, β₁=0.9, β₂=0.99, sign-based momentum updates
+\end{itemize}
+
+\textbf{Evaluation}: TREC 2019 DL Track and MS MARCO dev set using NDCG@10, MAP, MRR@10 metrics.
+
+%----------------------------------------------------------------------------------------
+

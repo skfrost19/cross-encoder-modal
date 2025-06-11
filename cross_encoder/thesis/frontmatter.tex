@@ -1,0 +1,275 @@
+\frontmatter% Use roman page numbering style (i, ii, iii, iv...) for the pre-content pages
+
+\pagestyle{plain} % Default to the plain heading style until the thesis style is called for the body content
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\begin{titlepage}
+\begin{center}
+\begin{spacing}{1.2}
+
+{\huge \bfseries\ttitle\par}  % Thesis title
+
+\vspace {5mm}
+\textit{A thesis submitted in partial fulfillment of the requirements\\for the award of the degree of} 
+
+\vspace{7mm}
+\textsc{\huge MASTER OF TECHNOLOGY}
+
+\vspace {3mm}
+\begin{figure}[htp]
+    \centering
+    \includegraphics[scale=0.28]{./IIITA_Logo.png}
+\end{figure}
+% ************************************
+\begin{minipage}[t]{0.5\textwidth}
+    \begin{flushleft} \large
+        \textit{By:-} \\%[2mm]
+            \textsc{SHAHIL KUMAR} % Student Names
+    \end{flushleft}
+\end{minipage}
+\begin{minipage}[t]{0.45\textwidth}
+    \begin{flushright} \large
+        \textit{Enrollment No.} \\
+            \textsc{MML2023008} % Student Enrollment numbers
+    \end{flushright}
+\end{minipage}\\[1cm]
+% *************************************
+
+\textit{Under the Supervision of}\\[2mm]
+\textsc{\Large \supname}\\% Supervisor's Name
+
+%\textit{Under the Co-Supervision of}\\[2mm]
+%\textsc{\Large Prof. Manish Goswami}\\% Supervisor's Name
+\vspace{7mm}
+\textit{to the}\\[2mm]
+\textsc{\Large \deptname}\\ % Department
+
+\vspace{8mm}
+\begin{hindi}
+    \textsc{\Large {भारतीय सूचना प्रौद्योगिकी संस्थान, इलाहाबाद}} \\
+\end{hindi}
+\vspace{3mm}
+\textsc{\Large Indian Institute of Information Technology, Allahabad} % university
+
+\vspace{5mm}
+{\fontsize{14}{14}\selectfont \text{May , 2025}}
+
+
+\end{spacing}
+\end{center}
+\end{titlepage}
+
+
+
+%----------------------------------------------------------------------------------------
+%	DECLARATION
+%----------------------------------------------------------------------------------------
+\checktoopen
+\begin{figure}[htp]
+    % \centering
+    \includegraphics[height=3cm,keepaspectratio]{./IIITA_Header.png}
+\end{figure}
+% \string\setblankpagestyle \space
+\thispagestyle{empty}
+\vspace{1mm}
+
+\begin{center}
+    {\large\bfseries CANDIDATE DECLARATION}
+\end{center}
+
+\begin{spacing}{1.5}
+\addchaptertocentry{CANDIDATE DECLARATION}
+\vspace{10 pt}
+I hereby declare that work presented in the report entitled “\textbf{Comparative Analysis of Lion and AdamW Optimizers for Cross-Encoder Reranking with MiniLM, GTE, and ModernBERT}”, submitted towards the fulfillment of MASTER’S THESIS report of M.Tech at Indian Institute of Information Technology Allahabad, is an authenticated original work carried out under supervision of \textbf{Dr. Muneendra Ojha}. Due Acknowledgements have been made in the text to all other material used. the project was done in full compliance with the requirements and constraints of the prescribed curriculum. 
+\end{spacing}
+
+\begin{spacing}{2.0}
+\begin{flushright}
+    \begin{minipage}{0.5\textwidth}
+        \flushright \vspace{60 pt}
+        \underline{\hspace{6cm}} \\
+        \makebox[6cm]{\textbf{Shahil Kumar - MML2023008}} \\[80pt]
+    \end{minipage}
+\end{flushright}
+\end{spacing}
+\newpage
+
+%----------------------------------------------------------------------------------------
+%	CERTIFICATE
+%----------------------------------------------------------------------------------------
+\checktoopen
+\begin{figure}[htp]
+    % \centering
+    \includegraphics[height=3cm,keepaspectratio]{./IIITA_Header.png}
+\end{figure}
+% \string\setblankpagestyle \space
+\thispagestyle{empty}
+\vspace*{.06\textheight}
+
+\begin{spacing}{1.5}
+\addchaptertocentry{CERTIFICATE FROM SUPERVISORS}
+\begin{center}
+    {\centering\large\bfseries CERTIFICATE FROM SUPERVISORS\par\vspace{10pt}}
+\end{center}
+
+\noindent It is certified that the work contained in the thesis titled \enquote{\textbf{Comparative Analysis of Lion and AdamW
+Optimizers for Cross-Encoder Reranking with MiniLM, GTE, and ModernBERT}} by \textbf{Shahil kumar} has been carried out under supervision of \textbf{Dr. Muneendra Ojha} and that this work has not been submitted elsewhere for a degree.
+
+\vspace{3.5cm}
+
+\hfill\begin{minipage}{7.5cm}
+    \begin{spacing}{1.2}
+        \par
+        \rule{\textwidth}{0.2pt}\\
+        {Dr. Muneendra Ojha} \par
+        {\deptname}  \par
+        IIIT Allahabad \par
+    \end{spacing}
+\end{minipage}
+
+
+\end{spacing}
+% \end{certificate}
+\cleardoublepage
+
+\begin{figure}[htp]
+    % \centering
+    \includegraphics[height=3cm,keepaspectratio]{./IIITA_Header.png}
+\end{figure}
+% \string\setblankpagestyle \space
+\thispagestyle{empty}
+\vspace*{.06\textheight}
+
+\begin{spacing}{1.5}
+\addchaptertocentry{CERIFICATE OF APPROVAL}
+\begin{center}
+    {\centering\large\bfseries CERTIFICATE OF APPROVAL \par\vspace{10pt}}
+\end{center}
+
+ This thesis entitled \textbf{Comparative Analysis of Lion and AdamW Optimizers for Cross-Encoder Reranking with MiniLM, GTE, and ModernBERT}  by \textbf{Shahil Kumar} (MML2023008) is approved for the degree of Master's thesis at IIIT Allahabad  It is understood that by this approval, the undersigned does not necessarily endorse or approve any statement made, opinion expressed, or conclusion drawn therein but approves the thesis only for the purpose for which it is submitted."\\[40 pt]
+
+ Signature and name of the committee members (on final examination and approval of the thesis): \\[10 pt]
+ \begin{flushleft}
+     \begin{enumerate}
+         \item Dr. Muneendra Ojha \\[25pt]
+         \item Dr. Kavindra Kandpal\\[25 pt]
+         \item Dr. Anand Kumar Tiwari \\[25 pt]
+
+     \end{enumerate}
+ \end{flushleft}
+ \vspace{20 pt}
+ \begin{flushright}
+     \begin{minipage}{0.5\textwidth}
+        \flushright \vspace{60 pt}
+        \underline{\hspace{6cm}} \\
+        \makebox[6cm]{\textbf{Dean(A\&R)}} \\[80pt]
+    \end{minipage}
+ \end{flushright}
+\end{spacing} 
+
+\newpage
+\addchaptertocentry{PLAGIARISM REPORT}
+\includepdf[pages=-]{plagrevanth.pdf}
+\newpage
+\begin{figure}[htp]
+    % \centering
+    \includegraphics[height=3cm,keepaspectratio]{./IIITA_Header.png}
+\end{figure}
+% \string\setblankpagestyle \space
+\thispagestyle{empty}
+\vspace{1mm}
+
+\begin{center}
+    {\large\bfseries ACKNOWLEDGEMENT}
+\end{center}
+
+\begin{spacing}{1.5}
+\addchaptertocentry{ACKNOWLEDGEMENT}
+I am thankful to my project supervisor, \textbf{Dr. Muneendra Ojha} for the guidance, support, and invaluable feedback throughout the research process. Their expertise, encouragement, and patience have been instrumental in the completion of this thesis.\\[10pt] 
+ I am grateful to Dr. K.P. Singh, Head of the Department of Information Technology, and also my panel members Dr Kavindra Kandpal and Prof. Anand Kumar for their guidance and support.\\[10pt]
+ I would also like to thank the Indian Institute of Information Technology, Allahabad for providing the necessary resources and facilities to conduct this research. I am deeply grateful to the participants who generously shared their time and personal information to make this study possible. \\[30 pt]
+\end{spacing}
+
+\begin{spacing}{2.0}
+\begin{flushright}
+    \begin{minipage}{0.5\textwidth}
+        \flushright \vspace{60 pt}
+        \underline{\hspace{6cm}} \\
+        \makebox[6cm]{\textbf{Shahil Kumar - MML2023008}} \\[80pt]
+    \end{minipage}
+\end{flushright}
+\end{spacing}
+\newpage
+
+
+\begin{center}
+    {\large\bfseries ABSTRACT}
+\end{center}
+\begin{spacing}{1.5}
+\addchaptertocentry{ABSTRACT} % Add the abstract to the table of contents
+     Modern information retrieval systems often employ a two-stage pipeline consisting of an efficient initial retrieval stage followed by a more computationally intensive reranking stage. Cross-encoder models have demonstrated state-of-the-art effectiveness for the reranking task due to their ability to perform deep, contextualized analysis of query-document pairs. The choice of optimizer during the fine-tuning phase can significantly impact the final performance and training efficiency of these models. This paper investigates the impact of using the recently proposed Lion optimizer compared to the widely used AdamW optimizer for fine-tuning cross-encoder rerankers. We fine-tune three distinct transformer models, `microsoft/MiniLM-L12-H384-uncased`, `Alibaba-NLP/gte-multilingual-base`, and `answerdotai/ModernBERT-base`, on the MS MARCO passage ranking dataset using both optimizers. Notably, GTE and ModernBERT support longer context lengths (8192 tokens). The effectiveness of the resulting models is evaluated on the TREC 2019 Deep Learning Track passage ranking task and the MS MARCO development set (for MRR@10). Our experiments, facilitated by the Modal cloud computing platform for GPU resource management, show comparative results across three training epochs. ModernBERT trained with Lion achieved the highest NDCG@10 (0.7225) and MAP (0.5121) on TREC DL 2019, while MiniLM trained with Lion tied with ModernBERT with Lion on MRR@10 (0.5988) on MS MARCO dev. We analyze the performance trends based on standard IR metrics, providing insights into the relative effectiveness of Lion versus AdamW for different model architectures and training configurations in the context of passage reranking.
+\end{spacing}
+
+
+\newpage
+
+
+%----------------------------------------------------------------------------------------
+%	LIST OF CONTENTS/FIGURES/TABLES PAGES
+%----------------------------------------------------------------------------------------
+\addchaptertocentry{Table of Contents}
+\tableofcontents % Prints the main table of contents
+\listoffigures
+\listoftables
+
+%----------------------------------------------------------------------------------------
+%	ABBREVIATIONS
+%----------------------------------------------------------------------------------------
+% \chapter*{List of Abbreviations}
+% \addcontentsline{toc}{chapter}{List of Abbreviations}
+% \begin{tabular}{@{}ll}
+%     Machine Learning Models\\
+%     $E_{m}$ & Energy level\\
+%     $S_{m}$ & MMSE estimation \\
+%     SNR\\
+%     Ambient Back scattering Communication \\
+%     SVM, RF, DT, XGB \\
+%     BER and reflection Coefficient \\
+%     Tag decode \\
+%     % Add more as needed
+% \end{tabular}
+
+%----------------------------------------------------------------------------------------
+%	PHYSICAL CONSTANTS/OTHER DEFINITIONS
+%----------------------------------------------------------------------------------------
+
+% \begin{constants}{lr@{${}={}$}l} % The list of physical constants is a three column table
+
+% % The \SI{}{} command is provided by the siunitx package, see its documentation for instructions on how to use it
+
+% Speed of Light & $c_{0}$ & \SI{2.99792458e8}{\meter\per\second} (exact)\\
+% Constant Name & $Symbol$ & $Constant Value$ with units\\
+
+% \end{constants}
+
+%----------------------------------------------------------------------------------------
+%	SYMBOLS
+%----------------------------------------------------------------------------------------
+
+% \begin{symbols}{lll} % Include a list of Symbols (a three column table)
+
+% $a$ & distance & \si{\meter} \\
+% $P$ & power & \si{\watt} (\si{\joule\per\second}) \\
+% %Symbol & Name & Unit \\
+
+% \addlinespace % Gap to separate the Roman symbols from the Greek
+
+% $\omega$ & angular frequency & \si{\radian} \\
+
+% \end{symbols}
+
+%----------------------------------------------------------------------------------------
+%	DEDICATION
+%----------------------------------------------------------------------------------------

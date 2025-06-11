@@ -1,0 +1,103 @@
+\chapter{Literature Review}
+\label{Chapter2}
+
+This chapter reviews key literature on cross-encoder models, optimization algorithms, and evaluation methodologies for information retrieval.
+
+\section{Neural Information Retrieval Evolution}
+
+Information retrieval has transformed from traditional term-based matching (TF-IDF, BM25 \cite{robertson2009probabilistic}) to neural approaches that capture semantic relationships. Dense retrieval methods like DPR \cite{karpukhin2020dense} and ANCE \cite{xiong2020approximate} encode queries and documents independently, while cross-encoders enable richer query-document interactions.
+
+\section{Cross-Encoder Architectures}
+
+Cross-encoders leverage transformer architectures for document reranking. Nogueira and Cho \cite{nogueira2020passagererankingbert} demonstrated BERT's effectiveness for reranking by concatenating queries and documents with special tokens. The [CLS] representation predicts relevance scores through fine-tuning on labeled data.
+
+Modern architectures include:
+\begin{itemize}
+\item \textbf{MiniLM \cite{wang2020minilm}}: Distilled BERT variant for efficiency
+\item \textbf{GTE \cite{li2023towards}}: Multilingual model with extended context (8192 tokens)  
+\item \textbf{ModernBERT \cite{modernbert}}: Advanced architecture with RoPE, Flash Attention, GeGLU
+\end{itemize}
+
+\section{Optimization Algorithms}
+
+\subsection{Traditional Optimizers}
+Adam \cite{kingma2017adam} combines momentum with adaptive learning rates using first and second moment estimates. AdamW \cite{loshchilov2019decoupled} improved generalization by decoupling weight decay from gradient updates, becoming the standard for transformer training.
+
+\subsection{Lion Optimizer}
+Lion \cite{chen2023symbolic} represents a paradigm shift using sign-based momentum: \texttt{update = sign(momentum) * learning\_rate}. This simplified approach reduces memory requirements while maintaining competitive performance across vision tasks.
+
+\section{Evaluation Benchmarks}
+
+Standard IR evaluation relies on:
+\begin{itemize}
+\item \textbf{MS MARCO \cite{DBLP:journals/corr/NguyenRSGTMD16}}: Large-scale passage ranking dataset
+\item \textbf{TREC DL 2019 \cite{craswell2020overview}}: Deep learning track for passage ranking
+\item \textbf{Metrics}: nDCG@10, MRR@10, MAP measure ranking quality
+\end{itemize}
+
+\section{Research Gaps}
+
+While cross-encoder effectiveness is well-established, systematic investigation of optimization strategies remains limited. Most studies assume AdamW without exploring alternatives like Lion, particularly for information retrieval tasks where ranking precision is critical.
+
+\subsection{Modern Transformer Architectures}
+
+Recent developments in transformer architectures have introduced models specifically designed for improved efficiency and longer context processing. The General Text Embeddings (GTE) family \cite{li2023towards} demonstrated that models trained on diverse, multilingual corpora could achieve strong performance across various text understanding tasks, including retrieval and reranking.
+
+ModernBERT \cite{modernbert} represents the current state-of-the-art in encoder-only transformers, incorporating several architectural innovations:
+
+\begin{itemize}
+    \item \textbf{Rotary Positional Embeddings (RoPE)} \cite{su2023roformerenhancedtransformerrotary}: Enable effective handling of longer sequences by providing more flexible positional encoding.
+    \item \textbf{Flash Attention} \cite{dao2022flashattentionfastmemoryefficientexact}: Improves memory efficiency and computational speed for attention operations.
+    \item \textbf{GeGLU Activation Functions} \cite{shazeer2020gluvariantsimprovetransformer}: Enhance model expressiveness while maintaining computational efficiency.
+\end{itemize}
+
+These architectural improvements enable ModernBERT to process sequences up to 8192 tokens efficiently, making it particularly suitable for long document processing tasks.
+
+%----------------------------------------------------------------------------------------
+\section{Optimization Algorithms for Deep Learning}
+
+The success of neural information retrieval models depends heavily on the optimization algorithms used during training. The choice of optimizer affects convergence speed, final performance, and training stability. This section reviews the evolution of optimization algorithms and their specific applications to transformer-based models.
+
+\subsection{Classical Optimization Methods}
+
+Stochastic Gradient Descent (SGD) remains a fundamental optimization algorithm, providing theoretical guarantees and interpretable behavior. However, the challenges of training deep neural networks - including vanishing gradients, saddle points, and varying curvature across parameter space - motivated the development of adaptive optimization methods.
+
+The introduction of momentum to SGD addressed some limitations by accumulating gradients across iterations, helping optimization navigate through areas of high curvature and accelerate convergence in consistent directions. However, SGD with momentum still struggled with the varying scales of different parameters and the need for careful learning rate tuning.
+
+\subsection{Adaptive Learning Rate Methods}
+
+AdaGrad \cite{duchi2011adaptive} introduced the concept of adaptive learning rates, automatically adjusting step sizes based on historical gradient information. By maintaining per-parameter learning rates inversely proportional to the square root of accumulated squared gradients, AdaGrad could handle sparse features effectively and reduce the need for manual learning rate tuning.
+
+RMSprop \cite{tieleman2012lecture} addressed AdaGrad's aggressive learning rate decay by using exponential moving averages instead of accumulating all historical gradients. This modification prevented the learning rate from becoming too small too quickly, enabling continued learning throughout training.
+
+Adam \cite{kingma2017adam} combined the benefits of momentum-based methods with adaptive learning rates, maintaining separate exponentially decaying averages for both gradients (first moment) and squared gradients (second moment). The Adam optimizer became widely adopted due to its robustness across different architectures and tasks, requiring minimal hyperparameter tuning in many scenarios.
+
+\subsection{AdamW and Weight Decay Regularization}
+
+AdamW \cite{loshchilov2019decoupled} represented a significant improvement over Adam by decoupling weight decay regularization from the adaptive learning rate mechanism. The key insight was that traditional L2 regularization in Adam led to suboptimal behavior because the adaptive learning rate scaling affected both gradient and regularization terms.
+
+By separating weight decay from gradient-based updates, AdamW achieved better generalization performance and more stable training dynamics. The decoupled formulation:
+
+\begin{equation}
+\theta_{t+1} = \theta_t - \eta \left( \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon} + \lambda \theta_t \right)
+\end{equation}
+
+where $\lambda$ represents the weight decay coefficient applied directly to parameters, independent of the adaptive learning rate scaling.
+
+AdamW quickly became the standard optimizer for transformer-based models, demonstrating superior performance across various natural language processing tasks and establishing itself as the default choice for most deep learning applications.
+
+\subsection{Lion Optimizer: A Novel Approach}
+
+The Lion (EvoLved Sign mOmeNtum) optimizer \cite{chen2023symbolic} represents a departure from traditional adaptive optimization approaches. Developed through symbolic mathematics and program search, Lion utilizes a simplified update rule that relies primarily on the sign of momentum-based gradients.
+
+The Lion update mechanism follows:
+
+\begin{align}
+c_t &= \beta_1 m_{t-1} + (1 - \beta_1) g_t \\
+\theta_t &= \theta_{t-1} - \eta \left( \text{sign}(c_t) + \lambda \theta_{t-1} \right) \\
+m_t &= \beta_2 m_{t-1} + (1 - \beta_2) g_t
+\end{align}
+
+
+
+
