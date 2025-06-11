@@ -11,3 +11,5 @@ __pycache__/
 stats.py
 *.toc
 *.lot
+*.bcf
+*.lof
