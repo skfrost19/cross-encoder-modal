@@ -9,3 +9,5 @@ __pycache__/
 *.out
 *.gz
 stats.py
+*.toc
+*.lot
