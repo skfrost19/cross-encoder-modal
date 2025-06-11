@@ -13,3 +13,5 @@ stats.py
 *.lot
 *.bcf
 *.lof
+*.bcf
+*.xml

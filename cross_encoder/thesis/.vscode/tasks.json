@@ -1,0 +1,27 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Clean LaTeX",
+            "type": "shell",
+            "command": ".\\clean.bat",
+            "problemMatcher": []
+        },
+        {
+            "label": "Compile LaTeX",
+            "type": "shell",
+            "command": ".\\compile.bat",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Clean and Compile",
+            "dependsOrder": "sequence",
+            "dependsOn": ["Clean LaTeX", "Compile LaTeX"],
+            "problemMatcher": []
+        }
+    ]
+}
