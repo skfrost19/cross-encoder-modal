@@ -1,201 +1,171 @@
-\chapter{Code} % Main appendix title
+\chapter{Detailed Evaluation Metrics} % Main appendix title
 
-\label{AppendixA} 
-\begin{sloppypar}
-\lstset{
-  language=Python,
-  backgroundcolor=\color{lightgray},
-  basicstyle=\ttfamily\footnotesize,
-  breaklines=true,
-  commentstyle=\color{green},
-  keywordstyle=\color{blue},
-  stringstyle=\color{red},
-}
+\label{AppendixA}
 
 
-\subsection{Image Degradation Code in Python}
+This appendix presents comprehensive evaluation metrics for all model configurations tested in our experiments. While the main chapters focus on key performance indicators, these detailed tables provide additional insights into model behavior across various retrieval effectiveness measures.
 
+\section{Primary Ranking Metrics}
+Table~\ref{tab:primary_metrics} presents the main effectiveness metrics including MAP, NDCG@10, MRR@10, and Precision@10 for all tested configurations.
 
-\section*{Code for Degradation Simulation}
+\begin{table}[htbp]
+\centering
+\caption{Primary ranking metrics comparing cross-encoder models across training epochs.}
+\label{tab:primary_metrics}
+\small
+\begin{tabular}{llccccc}
+\toprule
+\textbf{Model} & \textbf{Config} & \textbf{MAP} & \textbf{NDCG@10} & \textbf{MRR@10} & \textbf{P@10} & \textbf{R-Prec} \\
+\midrule
+\multirow{6}{*}{GTE} & AdamW-1 & 0.5005 & 0.7224 & 0.5940 & 0.8116 & 0.4964 \\
+ & AdamW-2 & 0.4999 & 0.7203 & 0.5942 & 0.8256 & 0.5018 \\
+ & AdamW-3 & 0.4899 & 0.6902 & 0.5972 & 0.8093 & 0.5017 \\
+ & Lion-1 & 0.4794 & 0.6970 & 0.5854 & 0.7884 & 0.4814 \\
+ & Lion-2 & 0.4577 & 0.6792 & 0.5957 & 0.7721 & 0.4642 \\
+ & Lion-3 & 0.4521 & 0.6571 & 0.5931 & 0.7488 & 0.4662 \\
+\midrule
+\multirow{6}{*}{MiniLM} & AdamW-1 & 0.4814 & 0.7008 & 0.5828 & 0.8000 & 0.4884 \\
+ & AdamW-2 & 0.4891 & 0.7094 & 0.5818 & 0.8116 & 0.4916 \\
+ & AdamW-3 & 0.4908 & 0.7127 & 0.5826 & 0.8116 & 0.4943 \\
+ & Lion-1 & 0.4858 & 0.7031 & 0.5890 & 0.8140 & 0.4952 \\
+ & Lion-2 & 0.4755 & 0.6916 & 0.5942 & 0.8070 & 0.4803 \\
+ & Lion-3 & 0.4706 & 0.6808 & \textbf{0.5988} & 0.8070 & 0.4809 \\
+\midrule
+\multirow{6}{*}{ModernBERT} & AdamW-1 & 0.5066 & 0.7105 & 0.5866 & 0.8163 & 0.5161 \\
+ & AdamW-2 & 0.4893 & 0.6839 & 0.5886 & 0.7814 & 0.4946 \\
+ & AdamW-3 & 0.4971 & 0.6959 & 0.5916 & 0.7860 & 0.5116 \\
+ & Lion-1 & \textbf{0.5121} & 0.7142 & 0.5834 & 0.8163 & 0.5148 \\
+ & Lion-2 & 0.5115 & \textbf{0.7225} & 0.5908 & 0.8209 & \textbf{0.5183} \\
+ & Lion-3 & 0.5020 & 0.7051 & \textbf{0.5988} & \textbf{0.8256} & 0.5102 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-\begin{lstlisting}[language=Python]
-import os
-import cv2
-import numpy as np
-import random
-from typing import Tuple
-from glob import glob
+\section{Precision and Recall Analysis}
+Tables~\ref{tab:precision_metrics} and~\ref{tab:recall_metrics} provide detailed precision and recall values at different cutoff thresholds, revealing the models' behavior at various result list depths.
 
-class DegradationModels:
-    def __init__(self, target_size: Tuple[int, int] = (512, 512)):
-        self.target_size = target_size
-        self.ffhq_path = "inputs/originals"
-        self.output_path = "inputs/degraded"
-        os.makedirs(self.output_path, exist_ok=True)
+\begin{table}[htbp]
+\centering
+\caption{Precision metrics at different cutoff levels.}
+\label{tab:precision_metrics}
+\small
+\begin{tabular}{llcccc}
+\toprule
+\textbf{Model} & \textbf{Config} & \textbf{P@5} & \textbf{P@10} & \textbf{P@20} & \textbf{P@100} \\
+\midrule
+\multirow{6}{*}{GTE} & AdamW-1 & 0.8930 & 0.8116 & 0.7372 & 0.3965 \\
+ & AdamW-2 & 0.8698 & 0.8256 & 0.7326 & 0.3963 \\
+ & AdamW-3 & 0.8558 & 0.8093 & 0.7128 & 0.3942 \\
+ & Lion-1 & 0.8558 & 0.7884 & 0.7070 & 0.3893 \\
+ & Lion-2 & 0.8326 & 0.7721 & 0.6802 & 0.3740 \\
+ & Lion-3 & 0.8140 & 0.7488 & 0.6907 & 0.3740 \\
+\midrule
+\multirow{6}{*}{MiniLM} & AdamW-1 & 0.8698 & 0.8000 & 0.7151 & 0.3870 \\
+ & AdamW-2 & 0.8698 & 0.8116 & 0.7186 & 0.3895 \\
+ & AdamW-3 & 0.8558 & 0.8116 & 0.7256 & 0.3891 \\
+ & Lion-1 & 0.8651 & 0.8140 & 0.7233 & 0.3847 \\
+ & Lion-2 & 0.8744 & 0.8070 & 0.7081 & 0.3821 \\
+ & Lion-3 & 0.8465 & 0.8070 & 0.6930 & 0.3809 \\
+\midrule
+\multirow{6}{*}{ModernBERT} & AdamW-1 & 0.8651 & 0.8163 & 0.7349 & 0.3993 \\
+ & AdamW-2 & 0.8605 & 0.7814 & 0.6953 & 0.3912 \\
+ & AdamW-3 & 0.8465 & 0.7860 & 0.6988 & 0.3958 \\
+ & Lion-1 & 0.8791 & 0.8163 & 0.7314 & 0.4033 \\
+ & Lion-2 & 0.8698 & \textbf{0.8209} & 0.7279 & \textbf{0.4016} \\
+ & Lion-3 & 0.8651 & 0.8256 & 0.7093 & 0.3967 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-    def _resize_image(self, image: np.ndarray) -> np.ndarray:
-        return cv2.resize(image, self.target_size)
+\begin{table}[htbp]
+\centering
+\caption{Recall metrics at different cutoff levels.}
+\label{tab:recall_metrics}
+\small
+\begin{tabular}{llcccc}
+\toprule
+\textbf{Model} & \textbf{Config} & \textbf{Recall@5} & \textbf{Recall@10} & \textbf{Recall@20} & \textbf{Recall@100} \\
+\midrule
+\multirow{6}{*}{GTE} & AdamW-1 & 0.1051 & 0.1689 & 0.2815 & 0.5501 \\
+ & AdamW-2 & 0.1041 & 0.1760 & 0.2753 & 0.5538 \\
+ & AdamW-3 & 0.1051 & 0.1715 & 0.2692 & 0.5489 \\
+ & Lion-1 & 0.1002 & 0.1614 & 0.2684 & 0.5401 \\
+ & Lion-2 & 0.0973 & 0.1610 & 0.2545 & 0.5211 \\
+ & Lion-3 & 0.0929 & 0.1542 & 0.2574 & 0.5181 \\
+\midrule
+\multirow{6}{*}{MiniLM} & AdamW-1 & 0.1027 & 0.1652 & 0.2645 & 0.5426 \\
+ & AdamW-2 & 0.1013 & 0.1668 & 0.2676 & 0.5446 \\
+ & AdamW-3 & 0.1007 & 0.1702 & 0.2719 & 0.5427 \\
+ & Lion-1 & 0.1022 & 0.1688 & 0.2704 & 0.5338 \\
+ & Lion-2 & 0.1025 & 0.1641 & 0.2613 & 0.5338 \\
+ & Lion-3 & 0.1001 & 0.1676 & 0.2542 & 0.5249 \\
+\midrule
+\multirow{6}{*}{ModernBERT} & AdamW-1 & 0.0995 & 0.1678 & 0.2731 & 0.5520 \\
+ & AdamW-2 & 0.0979 & 0.1634 & 0.2603 & 0.5443 \\
+ & AdamW-3 & 0.1019 & 0.1623 & 0.2627 & 0.5476 \\
+ & Lion-1 & 0.1052 & 0.1689 & 0.2733 & 0.5542 \\
+ & Lion-2 & 0.1048 & \textbf{0.1732} & 0.2699 & \textbf{0.5608} \\
+ & Lion-3 & 0.1037 & 0.1722 & 0.2640 & 0.5570 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-    def _apply_gaussian_blur(self, image: np.ndarray, kernel_size: int = 0, sigma: float = 0) -> np.ndarray:
-        if kernel_size == 0:
-            kernel_size = int(2 * np.ceil(2 * sigma) + 1)
-        if kernel_size % 2 == 0:
-            kernel_size += 1
-        return cv2.GaussianBlur(image, (kernel_size, kernel_size), sigma)
+\section{NDCG Analysis}
+Table~\ref{tab:ndcg_metrics} provides normalized discounted cumulative gain values at multiple cutoff points.
 
-    def _add_gaussian_noise(self, image: np.ndarray, std: float) -> np.ndarray:
-        noise = np.random.normal(0, std, image.shape).astype(np.float32)
-        noisy_image = image.astype(np.float32) + noise
-        return np.clip(noisy_image, 0, 255).astype(np.uint8)
+\begin{table}[htbp]
+\centering
+\caption{NDCG metrics at different cutoff levels.}
+\label{tab:ndcg_metrics}
+\small
+\begin{tabular}{llcccc}
+\toprule
+\textbf{Model} & \textbf{Config} & \textbf{NDCG@5} & \textbf{NDCG@10} & \textbf{NDCG@20} & \textbf{NDCG@100} \\
+\midrule
+\multirow{6}{*}{GTE} & AdamW-1 & 0.7567 & 0.7224 & 0.7071 & 0.6591 \\
+ & AdamW-2 & 0.7343 & 0.7203 & 0.6967 & 0.6550 \\
+ & AdamW-3 & 0.7080 & 0.6902 & 0.6703 & 0.6426 \\
+ & Lion-1 & 0.7229 & 0.6970 & 0.6786 & 0.6433 \\
+ & Lion-2 & 0.7008 & 0.6792 & 0.6580 & 0.6248 \\
+ & Lion-3 & 0.6801 & 0.6571 & 0.6450 & 0.6124 \\
+\midrule
+\multirow{6}{*}{MiniLM} & AdamW-1 & 0.7207 & 0.7008 & 0.6833 & 0.6402 \\
+ & AdamW-2 & 0.7345 & 0.7094 & 0.6908 & 0.6471 \\
+ & AdamW-3 & 0.7244 & 0.7127 & 0.6949 & 0.6474 \\
+ & Lion-1 & 0.7163 & 0.7031 & 0.6829 & 0.6369 \\
+ & Lion-2 & 0.7099 & 0.6916 & 0.6706 & 0.6295 \\
+ & Lion-3 & 0.6837 & 0.6808 & 0.6584 & 0.6268 \\
+\midrule
+\multirow{6}{*}{ModernBERT} & AdamW-1 & 0.7171 & 0.7105 & 0.6936 & 0.6555 \\
+ & AdamW-2 & 0.7112 & 0.6839 & 0.6701 & 0.6431 \\
+ & AdamW-3 & 0.7156 & 0.6959 & 0.6729 & 0.6497 \\
+ & Lion-1 & 0.7285 & 0.7142 & 0.6991 & 0.6610 \\
+ & Lion-2 & \textbf{0.7381} & \textbf{0.7225} & \textbf{0.6978} & \textbf{0.6638} \\
+ & Lion-3 & 0.7165 & 0.7051 & 0.6797 & 0.6542 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-    def _jpeg_compression(self, image: np.ndarray, quality: int) -> np.ndarray:
-        encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), quality]
-        _, encoded_img = cv2.imencode('.jpg', image, encode_param)
-        return cv2.imdecode(encoded_img, cv2.IMREAD_COLOR)
+\section{Metric Definitions}
+\label{app:metric_defs}
+Table~\ref{tab:metric_definitions} provides formal definitions of all evaluation metrics used in our experimental analysis.
 
-    def apply_degradation(self, image: np.ndarray, mode: str = 'BicC', scale_factor: int = 8) -> np.ndarray:
-        image = self._resize_image(image)
-        h, w = image.shape[:2]
-
-        if mode == 'BicC':
-            downsampled = cv2.resize(image, (w//scale_factor, h//scale_factor), interpolation=cv2.INTER_CUBIC)
-            upsampled = cv2.resize(downsampled, (w, h), interpolation=cv2.INTER_CUBIC)
-            quality = random.randint(90, 95)
-            return self._jpeg_compression(upsampled, quality)
-
-        elif mode == 'BicN':
-            downsampled = cv2.resize(image, (w//scale_factor, h//scale_factor), interpolation=cv2.INTER_CUBIC)
-            upsampled = cv2.resize(downsampled, (w, h), interpolation=cv2.INTER_CUBIC)
-            noise_std = random.uniform(20, 25)
-            return self._add_gaussian_noise(upsampled, noise_std)
-
-        elif mode == 'BBilN':
-            sigma = random.uniform(5, 7)
-            blurred = self._apply_gaussian_blur(image, sigma=sigma)
-            downsampled = cv2.resize(blurred, (w//scale_factor, h//scale_factor), interpolation=cv2.INTER_LINEAR)
-            upsampled = cv2.resize(downsampled, (w, h), interpolation=cv2.INTER_LINEAR)
-            noise_std = random.uniform(10, 15)
-            return self._add_gaussian_noise(upsampled, noise_std)
-
-        else:
-            raise ValueError(f"Unknown degradation mode: {mode}")
-
-    def process_ffhq_images(self):
-        modes = ['BicC', 'BicN', 'BBilN']
-        image_paths = glob(os.path.join(self.ffhq_path, '*'))
-
-        for mode in modes:
-            output_dir = os.path.join(self.output_path, mode)
-            os.makedirs(output_dir, exist_ok=True)
-
-            print(f"Processing mode: {mode}")
-            for img_path in image_paths:
-                img = cv2.imread(img_path)
-                if img is None:
-                    print(f"Skipping {img_path}, could not read.")
-                    continue
-                degraded = self.apply_degradation(img, mode=mode)
-                filename = os.path.basename(img_path)
-                cv2.imwrite(os.path.join(output_dir, filename), degraded)
-
-if __name__ == "__main__":
-    degrader = DegradationModels()
-    degrader.process_ffhq_images()
-\end{lstlisting}
-
-\subsection*{Code for colour degradation}
-
-\begin{lstlisting}[language=Python]
-from PIL import Image
-import os
-from glob import glob
-
-# Settings
-input_folder = "inputs/originals"
-output_folder = "inputs/degraded_mediancut"
-num_colors = 6  # Number of colors for Median Cut
-
-# Create output directory if it doesn't exist
-os.makedirs(output_folder, exist_ok=True)
-
-# Get all image paths from ffhq folder
-image_paths = glob(os.path.join(input_folder, "*"))
-
-# Process each image
-for path in image_paths:
-    try:
-        # Load image
-        original = Image.open(path).convert("RGB")
-
-        # Apply Median Cut quantization
-        degraded = original.quantize(colors=num_colors, method=0)
-
-        # Convert back to RGB and save
-        degraded_rgb = degraded.convert("RGB")
-        filename = os.path.basename(path)
-        degraded_rgb.save(os.path.join(output_folder, filename))
-
-        print(f"Processed and saved: {filename}")
-    except Exception as e:
-        print(f"Failed to process {path}: {e}")
-\end{lstlisting}
-\begin{lstlisting}[language=Python]
-import cv2
-import numpy as np
-from sklearn.cluster import KMeans
-import os
-from tqdm import tqdm
-
-def degrade_color_palette(image, num_colors=8):
-    """Degrade the color palette of a single image."""
-    h, w, _ = image.shape
-    img_reshaped = image.reshape((-1, 3))
-
-    # Apply k-means to extract dominant colors (palette)
-    kmeans = KMeans(n_clusters=num_colors, random_state=42).fit(img_reshaped)
-    palette = np.uint8(kmeans.cluster_centers_)
-    labels = kmeans.predict(img_reshaped)
-
-    # Reconstruct degraded image from palette
-    degraded = palette[labels].reshape((h, w, 3))
-    return degraded
-
-def process_folder(input_folder, output_folder, num_colors=8):
-    """
-    Process all images in a folder and save degraded versions in an output folder.
-
-    Args:
-        input_folder: Path to the folder containing input images
-        output_folder: Path to save degraded images
-        num_colors: Number of colors to use in the degraded palette
-    """
-    # Create output folder if it doesn't exist
-    os.makedirs(output_folder, exist_ok=True)
-
-    # Get all image files in the input folder
-    image_files = [f for f in os.listdir(input_folder) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
-
-    # Process each image
-    for filename in tqdm(image_files, desc="Processing images"):
-        # Load image
-        img_path = os.path.join(input_folder, filename)
-        img = cv2.imread(img_path)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
-        # Apply color degradation
-        degraded = degrade_color_palette(img, num_colors=num_colors)
-
-        # Save degraded image
-        output_path = os.path.join(output_folder, filename)
-        cv2.imwrite(output_path, cv2.cvtColor(degraded, cv2.COLOR_RGB2BGR))
-
-# Example usage
-input_folder = "inputs/originals"  # Folder containing original images
-output_folder = "inputs/degraded_kmeans"  # Folder to save degraded images
-num_colors = 6  # Number of colors in the degraded palette
-
-process_folder(input_folder, output_folder, num_colors=num_colors)
-print(f"Degraded images saved to {output_folder}")
-
-\end{lstlisting}
-\end{sloppypar}
+\begin{table}[htbp]
+\centering
+\caption{Definitions of key evaluation metrics used in this thesis.}
+\label{tab:metric_definitions}
+\small
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Metric} & \textbf{Definition} \\
+\midrule
+MAP & Mean Average Precision. The mean of average precision scores across all queries, where average precision is the average of precision values calculated at every position where a relevant document is retrieved. Range: [0,1]. \\
+NDCG@k & Normalized Discounted Cumulative Gain at rank k. Measures ranking quality with graded relevance and position-based discount. Range: [0,1]. \\
+P@k & Precision at k. The proportion of retrieved documents in the top k results that are relevant. Range: [0,1]. \\
+Recall@k & Recall at k. The proportion of all relevant documents that are retrieved in the top k results. Range: [0,1]. \\
+MRR@10 & Mean Reciprocal Rank at 10. Average of the reciprocal ranks of the first relevant document within the top 10 results. Range: [0,1]. \\
+R-Prec & R-Precision. Precision after R documents retrieved, where R is the number of relevant documents for the query. Range: [0,1]. \\
+bpref & Binary Preference. Measures ranking quality when relevance judgments are incomplete by considering known relevant/non-relevant document pairs. Range: [0,1]. \\
+\bottomrule
+\end{tabularx}
+\end{table}

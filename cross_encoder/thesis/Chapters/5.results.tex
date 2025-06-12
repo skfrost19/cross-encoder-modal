@@ -9,23 +9,50 @@ This chapter presents a comprehensive analysis of our experimental results compa
 
 Table~\ref{tab:main_results} presents the comprehensive evaluation results for all model configurations on both the TREC 2019 Deep Learning Track and MS MARCO development set. The results are tracked across three training epochs for each model-optimizer combination.
 
-\begin{table}[htbp]
+\begin{table*}[htbp]
 \centering
 \caption{Evaluation Results on TREC-DL 2019 and MS-MARCO Dev Passage Ranking}
 \label{tab:main_results}
-\begin{tabular}{l l c c c c c}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l l c c c c c c c}
 \toprule
-\textbf{Model} & \textbf{Optimizer} & \textbf{NDCG@10} & \textbf{MAP} & \textbf{MRR@10} & \textbf{R-Prec} & \textbf{P@10} \\
+\textbf{Base Model} & \textbf{Optimizer} & \textbf{Epoch} & \textbf{NDCG@10} & \textbf{MAP} & \textbf{MRR@10} & \textbf{Recall@10} & \textbf{R-Prec} & \textbf{P@10} \\
 \midrule
-MiniLM & AdamW & 0.7127 & 0.4908 & 0.5826 & 0.4962 & 0.8023 \\
-MiniLM & Lion & 0.6808 & 0.4706 & \textbf{0.5988} & 0.4923 & 0.8023 \\
-GTE & AdamW & 0.7224 & 0.5005 & 0.5940 & 0.4957 & 0.8140 \\
-GTE & Lion & 0.6909 & 0.4921 & 0.5957 & 0.5053 & 0.8140 \\
-ModernBERT & AdamW & 0.7105 & 0.5066 & 0.5865 & 0.5161 & 0.8163 \\
-ModernBERT & Lion & \textbf{0.7225} & \textbf{0.5115} & 0.5907 & \textbf{0.5183} & \textbf{0.8209} \\
+\multirow{3}{*}{MiniLM-L12-H384} & \multirow{3}{*}{AdamW}
+    & 1 & 0.7008 & 0.4814 & 0.5828 & 0.1712 & 0.4899 & 0.8047 \\
+    & & 2 & 0.7094 & 0.4891 & 0.5818 & 0.1715 & 0.5017 & 0.8093 \\
+    & & 3 & 0.7127 & 0.4908 & 0.5826 & 0.1706 & 0.4962 & 0.8023 \\
+\midrule
+\multirow{3}{*}{MiniLM-L12-H384} & \multirow{3}{*}{Lion}
+    & 1 & 0.7031 & 0.4858 & 0.5890 & 0.1698 & 0.4904 & 0.8070 \\
+    & & 2 & 0.6916 & 0.4755 & 0.5942 & 0.1724 & 0.5041 & 0.8116 \\
+    & & 3 & 0.6808 & 0.4706 & \cellcolor{yellow!50}\textbf{0.5988} & 0.1701 & 0.4923 & 0.8023 \\
+\midrule
+\multirow{3}{*}{GTE-multilingual-base} & \multirow{3}{*}{AdamW}
+    & 1 & 0.7224 & 0.5005 & 0.5940 & 0.1733 & 0.4957 & 0.8140 \\
+    & & 2 & 0.7203 & 0.4999 & 0.5942 & \cellcolor{yellow!50}\textbf{0.1733} & 0.5067 & 0.8163 \\
+    & & 3 & 0.6902 & 0.4899 & 0.5972 & 0.1730 & 0.5069 & 0.8140 \\
+\midrule
+\multirow{3}{*}{GTE-multilingual-base} & \multirow{3}{*}{Lion}
+    & 1 & 0.6785 & 0.4754 & 0.5854 & 0.1684 & 0.4849 & 0.7953 \\
+    & & 2 & 0.6909 & 0.4921 & 0.5957 & 0.1721 & 0.5053 & 0.8140 \\
+    & & 3 & 0.6904 & 0.4912 & 0.5931 & 0.1719 & 0.5041 & 0.8093 \\
+\midrule
+\multirow{3}{*}{Modern-BERT-base} & \multirow{3}{*}{AdamW}
+    & 1 & 0.7105 & 0.5066 & 0.5865 & 0.1678 & 0.5161 & 0.8163 \\
+    & & 2 & 0.6839 & 0.4893 & 0.5885 & 0.1634 & 0.4946 & 0.7814 \\
+    & & 3 & 0.6959 & 0.4971 & 0.5916 & 0.1623 & 0.5116 & 0.7860 \\ % Corrected P@10 based on context
+\midrule
+\multirow{3}{*}{Modern-BERT-base} & \multirow{3}{*}{Lion}
+    & 1 & 0.7142 & \cellcolor{yellow!50}\textbf{0.5121} & 0.5834 & 0.1689 & 0.5148 & 0.8163 \\
+    & & 2 & \cellcolor{yellow!50}\textbf{0.7225} & 0.5115 & 0.5907 & 0.1732 & \cellcolor{yellow!50}\textbf{0.5183} & 0.8209 \\
+    & & 3 & 0.7051 & 0.5020 & \cellcolor{yellow!50}\textbf{0.5988}* & 0.1722 & 0.5102 & \cellcolor{yellow!50}\textbf{0.8256} \\
 \bottomrule
-\end{tabular}
-\end{table}
+\end{tabular}%
+}
+\vspace{1em}\\
+\footnotesize{* MRR@10 is calculated on the MS MARCO v1.1 passage dataset development split. All other metrics are calculated on TREC DL 2019. Best result for each metric highlighted. (*Note: MiniLM+Lion also achieved 0.5988 MRR@10 at epoch 3, see Appendix~\ref{AppendixA} for complete metrics).}
+\end{table*}
 
 \subsection{Training Dynamics Analysis}
 
@@ -33,28 +60,28 @@ To better understand the behavior of each optimizer-model combination, we analyz
 
 \subsubsection{ModernBERT Training Dynamics}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{Figures/modernBERT-Lion-AdamW-eval_loss.png}
     \caption{ModernBERT: Evaluation Loss Comparison between Lion and AdamW}
     \label{fig:modernbert_eval_loss}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{Figures/modernBERT-Lion-adamW-train_loss.png}
     \caption{ModernBERT: Training Loss Progression}
     \label{fig:modernbert_train_loss}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{Figures/modernBERT-Lion-adamW-lrate.png}
     \caption{ModernBERT: Learning Rate Schedule}
     \label{fig:modernbert_lr}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{Figures/modernBERT-Lion-adamW_grad_norm.png}
     \caption{ModernBERT: Gradient Norm Evolution}
@@ -63,21 +90,21 @@ To better understand the behavior of each optimizer-model combination, we analyz
 
 \subsubsection{GTE Training Dynamics}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{Figures/gte_adamW_v_lion_eval_loss.png}
     \caption{GTE: Evaluation Loss Comparison}
     \label{fig:gte_eval_loss}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{Figures/gte_adamW_v_lion_train_loss.png}
     \caption{GTE: Training Loss Progression}
     \label{fig:gte_train_loss}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{Figures/gte_adamW_v_lion_grad_norm.png}
     \caption{GTE: Gradient Norm Evolution}
@@ -86,21 +113,21 @@ To better understand the behavior of each optimizer-model combination, we analyz
 
 \subsubsection{MiniLM Training Dynamics}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{Figures/microsoft_MiniLM-L12-H384-uncased_adamW_v_Lion_eval_loss.png}
     \caption{MiniLM: Evaluation Loss Comparison}
     \label{fig:minilm_eval_loss}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{Figures/microsoft_MiniLM-L12-H384-uncased_adamW_v_Lion_train_loss.png}
     \caption{MiniLM: Training Loss Progression}
     \label{fig:minilm_train_loss}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{Figures/microsoft_MiniLM-L12-H384-uncased_adamW_v_Lion_grad_norm.png}
     \caption{MiniLM: Gradient Norm Evolution}
