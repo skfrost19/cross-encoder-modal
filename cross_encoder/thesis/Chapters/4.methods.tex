@@ -14,7 +14,7 @@ Cross-encoder models represent a significant advancement in neural information r
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{Figures/cross_encoder_archi.png}
+    \includegraphics[width=\textwidth]{Figures/cross_encoder_diagram.png}
     \captionsetup{font=footnotesize, width=0.9\linewidth}
     \caption{Cross-Encoder Architecture for Passage Reranking. The model processes concatenated query-passage pairs through transformer layers, producing relevance scores for reranking candidate documents.}
     \label{fig:cross_encoder_architecture}
@@ -60,7 +60,8 @@ The General Text Embeddings (GTE) model \cite{li2023towards} extends capabilitie
     \item Number of layers: 12
     \item Attention heads: 12
     \item Maximum sequence length: 8192 tokens
-    \item Parameter count: ~137M parameters
+    \item Parameter count: ~305M parameters
+    \item Vocabulary size: 250,048 tokens
     \item Multilingual vocabulary support
 \end{itemize}
 
@@ -76,7 +77,8 @@ ModernBERT \cite{modernbert} incorporates state-of-the-art architectural innovat
     \item Number of layers: 22
     \item Attention heads: 12
     \item Maximum sequence length: 8192 tokens
-    \item Parameter count: ~139M parameters
+    \item Parameter count: ~149M parameters
+    \item Vocabulary size: 50,368 tokens
     \item Advanced positional encoding and attention mechanisms
 \end{itemize}
 
