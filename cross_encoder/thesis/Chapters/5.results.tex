@@ -143,7 +143,7 @@ The experimental results reveal distinct patterns in how different models intera
 \begin{itemize}
     \item \textbf{ModernBERT Performance:} With Lion optimizer and specialized training configuration (lower learning rate of 2e-6 and Cosine Annealing scheduler), ModernBERT achieved the highest overall performance on TREC DL 2019 metrics (NDCG@10: 0.7225, MAP: 0.5115). The training dynamics (Figures \ref{fig:modernbert_eval_loss}-\ref{fig:modernbert_grad_norm}) show more stable convergence with Lion compared to AdamW.
     
-    \item \textbf{GTE Behavior:} GTE showed stronger performance with AdamW (NDCG@10: 0.7224) using the standard learning rate (2e-5). The training curves (Figures \ref{fig:gte_eval_loss}-\ref{fig:gte_grad_norm}) indicate that AdamW provided more consistent optimization for this model.
+    \item \textbf{GTE Behavior:} GTE showed stronger performance with AdamW (NDCG@10: 0.7224) using the standard learning rate (2e-5). The training curves (Figures \ref{fig:gte_eval_loss}-\ref{fig:gte_grad_norm}) indicate that AdamW provided more consistent optimization for this model. Also the gradients are more stable in case with AdamW.
     
     \item \textbf{MiniLM Characteristics:} While MiniLM with AdamW showed better TREC metrics, the Lion optimizer achieved the highest MRR@10 (0.5988) on MS MARCO dev. The training dynamics (Figures \ref{fig:minilm_eval_loss}-\ref{fig:minilm_grad_norm}) suggest that Lion might be particularly effective for certain ranking scenarios.
 \end{itemize}

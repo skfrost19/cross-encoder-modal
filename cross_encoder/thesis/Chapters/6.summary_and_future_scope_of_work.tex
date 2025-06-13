@@ -3,117 +3,99 @@
 \chapter{Summary \& Future Scope of Work}
 \label{Chapter6}
 
-This chapter presents a comprehensive summary of our research findings on optimizer effectiveness in cross-encoder reranking and outlines promising directions for future investigation. We reflect on the key insights gained from our experimental analysis and discuss potential avenues for extending this work.
+This chapter summarizes the key contributions of our research and outlines promising directions for future investigation in optimizer effectiveness for cross-encoder reranking.
 
-\section{Summary of Research}
+\section{Research Summary}
 
-Our investigation into the comparative effectiveness of Lion and AdamW optimizers for cross-encoder reranking has yielded several significant findings:
+This thesis investigated the comparative effectiveness of Lion and AdamW optimizers for cross-encoder reranking across three transformer architectures: MiniLM, GTE, and ModernBERT.
 
-\subsection{Key Findings}
+\subsection{Primary Contributions}
 
 \begin{enumerate}
-    \item \textbf{Optimizer-Model Interactions:}
-    \begin{itemize}
-        \item The effectiveness of optimizers showed strong dependence on model architecture and training configuration
-        \item ModernBERT achieved optimal performance with Lion optimizer using specialized learning rate settings
-        \item GTE demonstrated superior performance with AdamW under standard training parameters
-        \item MiniLM showed varying preferences between optimizers depending on the evaluation metric
-    \end{itemize}
-
-    \item \textbf{Performance Achievements:}
-    \begin{itemize}
-        \item ModernBERT with Lion achieved best-in-class results:
-        \begin{itemize}
-            \item NDCG@10: 0.7225
-            \item MAP: 0.5115
-            \item R-Precision: 0.5183
-        \end{itemize}
-        \item Both MiniLM and ModernBERT with Lion achieved state-of-the-art MRR@10 (0.5988) on MS MARCO dev
-    \end{itemize}
-
-    \item \textbf{Training Dynamics:}
-    \begin{itemize}
-        \item Lion demonstrated more stable evaluation loss curves
-        \item Cosine Annealing learning rate schedule proved particularly effective with Lion
-        \item Gradient behavior showed distinct patterns between optimizers
-    \end{itemize}
+    \item \textbf{First Systematic Evaluation}: Conducted the first comprehensive comparison of Lion optimizer for cross-encoder information retrieval tasks across multiple architectures.
+    
+    \item \textbf{Architecture-Optimizer Interaction Analysis}: Demonstrated that optimizer effectiveness varies significantly based on model architecture and training configuration.
+    
+    \item \textbf{State-of-the-art Results}: Achieved best-in-class performance with ModernBERT + Lion (NDCG@10: 0.7225) and tied best MRR@10 (0.5988) on standard IR benchmarks.
+    
+    \item \textbf{Training Dynamics Insights}: Provided detailed analysis of convergence patterns and gradient behavior differences between optimizers.
 \end{enumerate}
 
-\subsection{Technical Insights}
+\subsection{Key Findings Summary}
 
-The research revealed several important technical considerations:
-
+Our experimental results establish that:
 \begin{itemize}
-    \item \textbf{Learning Rate Sensitivity:} The dramatic impact of learning rate selection on Lion's performance suggests careful tuning is essential
-    \item \textbf{Context Length Benefits:} Models supporting longer contexts (8192 tokens) showed generally superior performance
-    \item \textbf{Architecture Synergies:} Modern architectural features (RoPE, Flash Attention) appeared to complement Lion's optimization characteristics
+    \item \textbf{No Universal Optimizer}: Neither Lion nor AdamW consistently outperforms across all architectures
+    \item \textbf{Configuration Sensitivity}: Optimizer effectiveness depends heavily on learning rate and scheduling choices
+    \item \textbf{Modern Architecture Benefits}: Advanced transformer features synergize well with Lion's optimization approach
+    \item \textbf{Metric-Dependent Performance}: Different optimizers excel on different evaluation metrics
 \end{itemize}
 
 \section{Future Scope of Work}
 
-Our findings open several promising avenues for future research:
+This research opens several promising avenues for future investigation:
 
-\subsection{Technical Extensions}
+\subsection{Immediate Extensions}
 
 \begin{enumerate}
-    \item \textbf{Hyperparameter Optimization:}
+    \item \textbf{Comprehensive Hyperparameter Studies}:
     \begin{itemize}
-        \item Comprehensive grid search for Lion's optimal parameters across different model sizes
-        \item Investigation of alternative learning rate schedules
-        \item Exploration of momentum parameter impacts
+        \item Systematic grid search for Lion's optimal parameters across model architectures
+        \item Investigation of alternative learning rate schedules beyond Cosine Annealing
+        \item Analysis of momentum parameter sensitivity
     \end{itemize}
 
-    \item \textbf{Architecture Studies:}
+    \item \textbf{Extended Architecture Coverage}:
     \begin{itemize}
-        \item Evaluation of Lion's effectiveness on emerging transformer variants
-        \item Investigation of optimization patterns in multi-query attention mechanisms
-        \item Analysis of position embedding schemes' interaction with different optimizers
+        \item Evaluation on larger model sizes (large and extra-large variants)
+        \item Testing on emerging transformer architectures (e.g., Mamba, RetNet)
+        \item Investigation of decoder-only models for reranking tasks
     \end{itemize}
 
-    \item \textbf{Scaling Studies:}
+    \item \textbf{Enhanced Evaluation Scope}:
     \begin{itemize}
-        \item Analysis of optimizer behavior with larger model sizes
-        \item Investigation of training stability at different batch sizes
-        \item Evaluation of memory efficiency at scale
+        \item Extended evaluation on additional IR benchmarks (BEIR, LoTTE)
+        \item Cross-domain evaluation for generalization assessment
+        \item Multi-language reranking performance analysis
     \end{itemize}
 \end{enumerate}
 
-\subsection{Application Extensions}
-
-Several practical applications deserve further investigation:
+\subsection{Advanced Research Directions}
 
 \begin{itemize}
-    \item \textbf{Document-Level Reranking:} Leveraging the 8K context capability for full document reranking
-    \item \textbf{Multi-Stage Ranking:} Investigating optimizer impact in cascade ranking architectures
-    \item \textbf{Cross-Lingual Applications:} Extending the analysis to multilingual reranking scenarios
-    \item \textbf{Domain Adaptation:} Studying optimizer effectiveness in domain transfer settings
+    \item \textbf{Theoretical Analysis}: Mathematical characterization of Lion's convergence properties in ranking optimization contexts
+    
+    \item \textbf{Memory and Efficiency Studies}: Detailed analysis of training time, memory usage, and computational efficiency at scale
+    
+    \item \textbf{Hybrid Optimization Strategies}: Investigation of combining multiple optimizers during different training phases
+    
+    \item \textbf{Auto-ML Integration}: Development of automated optimizer selection based on architecture and dataset characteristics
 \end{itemize}
 
-\subsection{Theoretical Investigations}
+\subsection{Practical Applications}
 
-Future work should also address theoretical aspects:
+Future work should explore:
+\begin{itemize}
+    \item \textbf{Production Deployment}: Large-scale evaluation in real-world search systems
+    \item \textbf{Specialized Domains}: Medical, legal, and scientific document reranking
+    \item \textbf{Multi-Modal Extensions}: Optimization strategies for vision-language retrieval tasks
+\end{itemize}
+
+\section{Practical Recommendations}
+
+For practitioners working with cross-encoder reranking:
 
 \begin{itemize}
-    \item Analysis of Lion's convergence properties in ranking optimization
-    \item Mathematical characterization of optimizer-architecture interactions
-    \item Theoretical bounds on performance with different optimizers
+    \item \textbf{Start with AdamW}: Use AdamW as a robust baseline for initial experiments
+    \item \textbf{Consider Lion for Modern Architectures}: Explore Lion optimizer with appropriate learning rate tuning for recent transformer variants
+    \item \textbf{Monitor Training Dynamics}: Track multiple metrics and loss curves for optimal checkpoint selection
+    \item \textbf{Architecture-Specific Tuning}: Adjust optimizer parameters based on model architecture characteristics
 \end{itemize}
 
-\section{Recommendations for Practitioners}
+\section{Conclusion}
 
-Based on our findings, we recommend:
-
-\begin{itemize}
-    \item Consider Lion optimizer for modern architectures with appropriate learning rate scheduling
-    \item Maintain AdamW as a robust baseline, especially for established architectures
-    \item Carefully tune learning rates when using Lion optimizer
-    \item Monitor training dynamics through multiple metrics for optimal checkpoint selection
-\end{itemize}
-
-\section{Concluding Remarks}
-
-This research has demonstrated the potential of the Lion optimizer in cross-encoder reranking while highlighting the complexity of optimizer-model interactions. The findings provide a foundation for both practical applications and future research directions in neural information retrieval.
+This thesis demonstrates that optimizer choice significantly impacts cross-encoder reranking performance, with the effectiveness varying by architecture and configuration. The Lion optimizer shows particular promise for modern transformer architectures when properly tuned, while AdamW remains a reliable choice across different settings. These findings provide both practical guidance for practitioners and a foundation for future research in neural information retrieval optimization.
 
 \section*{Acknowledgments}
 
-We gratefully acknowledge Modal Labs (\url{https://modal.com/}) for providing the cloud computing infrastructure and GPU resources (NVIDIA A100-80GB) that made this research possible. Their platform enabled efficient experimentation with large-scale models and datasets, contributing significantly to the comprehensive nature of our analysis.
+We gratefully acknowledge Modal Labs for providing the cloud computing infrastructure and GPU resources (NVIDIA A100-80GB) that enabled this comprehensive experimental study.

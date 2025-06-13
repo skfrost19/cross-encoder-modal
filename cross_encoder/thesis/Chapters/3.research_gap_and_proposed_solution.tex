@@ -6,37 +6,180 @@
 
 \section{Research Gap}
 
-While AdamW has become standard for transformer training, the Lion optimizer's effectiveness for cross-encoder IR tasks remains unexplored. Key gaps include:
+Despite the established effectiveness of cross-encoder models for information retrieval, several critical gaps exist in current research that motivate this investigation:
+
+\subsection{Limited Optimization Strategy Exploration}
+
+While AdamW has become the de facto standard for transformer training, the systematic investigation of optimization strategies for cross-encoder models remains limited. Most studies assume AdamW without exploring alternatives, particularly for information retrieval tasks where ranking precision is critical. The recently proposed Lion optimizer \cite{chen2023symbolic}, with its novel sign-based momentum approach, presents an unexplored opportunity for cross-encoder optimization.
+
+\subsection{Architecture-Optimizer Interaction Analysis}
+
+Different transformer architectures may respond differently to optimization strategies, yet this interaction has not been systematically studied. Modern architectures like:
 
 \begin{itemize}
-    \item \textbf{Novel Optimizer Evaluation}: Lion optimizer's memory efficiency and simplified updates haven't been systematically evaluated for cross-encoder training in IR contexts.
-    \item \textbf{Architecture-Optimizer Interaction}: Different transformer architectures (MiniLM, GTE, ModernBERT) may respond differently to optimization strategies.
-    \item \textbf{Training Efficiency Trade-offs}: Lion's claimed efficiency advantages need validation for computationally intensive cross-encoder training.
-    \item \textbf{Comprehensive IR Benchmarking}: Systematic evaluation across standard IR datasets (MS MARCO, TREC DL) with multiple metrics is needed.
+    \item \textbf{ModernBERT} \cite{modernbert}: Incorporating Rotary Positional Embeddings (RoPE), Flash Attention, and GeGLU activations with 8192 token context support
+    \item \textbf{GTE models} \cite{li2023towards}: Multilingual architectures trained on diverse corpora with extended context capabilities
+    \item \textbf{MiniLM} \cite{wang2020minilm}: Efficient distilled variants designed for computational efficiency
 \end{itemize}
+
+Each may exhibit different optimization dynamics with various optimizers, requiring systematic evaluation.
+
+\subsection{Information Retrieval Context Specificity}
+
+Most optimizer comparisons focus on language modeling or general NLP tasks. Information retrieval presents unique challenges:
+\begin{itemize}
+    \item \textbf{Ranking Quality Focus}: IR metrics prioritize ranking precision over classification accuracy
+    \item \textbf{Query-Document Interaction}: Cross-encoder architectures require different optimization considerations than standard sequence models
+    \item \textbf{Training Efficiency}: Large-scale IR datasets demand memory-efficient training approaches
+\end{itemize}
+
+\subsection{Modern Transformer Architecture Gaps}
+
+Recent architectural innovations have not been thoroughly evaluated with alternative optimizers:
+
+\subsubsection{ModernBERT Architectural Advances}
+ModernBERT \cite{modernbert} represents the current state-of-the-art in encoder-only transformers, incorporating several key innovations:
+
+\begin{itemize}
+    \item \textbf{Rotary Positional Embeddings (RoPE)} \cite{su2023roformerenhancedtransformerrotary}: Enable effective handling of longer sequences up to 8192 tokens by providing more flexible positional encoding compared to traditional absolute positional embeddings.
+    \item \textbf{Flash Attention} \cite{dao2022flashattentionfastmemoryefficientexact}: Improves memory efficiency and computational speed for attention operations, particularly beneficial for longer sequences.
+    \item \textbf{GeGLU Activation Functions} \cite{shazeer2020gluvariantsimprovetransformer}: Enhance model expressiveness while maintaining computational efficiency compared to traditional ReLU activations.
+\end{itemize}
+
+These architectural improvements enable efficient processing of long documents but their interaction with different optimizers, particularly Lion's memory-efficient approach, remains unexplored.
+
+\subsubsection{GTE Model Family}
+The General Text Embeddings (GTE) family \cite{li2023towards} demonstrated that models trained on diverse, multilingual corpora could achieve strong performance across various text understanding tasks. The GTE-multilingual-base model supports 75 languages and 8192 token context length, but optimization strategy comparisons for this architecture in IR contexts are lacking.
+
+\subsection{Comprehensive IR Benchmarking Gap}
+
+Existing optimizer evaluations typically focus on limited metrics or datasets. A comprehensive evaluation across standard IR benchmarks (MS MARCO, TREC DL) with multiple effectiveness metrics (NDCG@10, MAP, MRR@10, Recall@10, R-Prec, P@10) is needed to establish optimizer performance in IR contexts.
+
+\subsection{Training Efficiency and Memory Usage Analysis}
+
+Lion optimizer claims memory efficiency advantages due to its simplified momentum tracking, but these benefits have not been validated for computationally intensive cross-encoder training scenarios typical in information retrieval applications.
 
 \section{Methodology}
 
-This research systematically compares Lion and AdamW optimizers across three cross-encoder architectures for information retrieval tasks.
+This research addresses the identified gaps through a systematic comparative study of Lion and AdamW optimizers across three distinct cross-encoder architectures for information retrieval tasks.
 
-\subsection{Model Selection}
-Three transformer architectures representing different efficiency-effectiveness points:
+\subsection{Research Objectives}
+
 \begin{itemize}
-    \item \textbf{MiniLM-L12-H384}: Compact model (384 hidden dims, 12 layers) for efficiency
-    \item \textbf{GTE-multilingual-base}: Multilingual model with 8192 token context support
-    \item \textbf{ModernBERT-base}: State-of-the-art encoder with RoPE, Flash Attention, GeGLU
+    \item \textbf{Primary Objective}: Compare Lion and AdamW optimizer effectiveness for cross-encoder reranking across multiple transformer architectures
+    \item \textbf{Secondary Objectives}: 
+    \begin{itemize}
+        \item Analyze architecture-optimizer interaction patterns
+        \item Evaluate training dynamics and convergence behavior
+        \item Assess memory efficiency and computational requirements
+        \item Provide comprehensive IR benchmark results
+    \end{itemize}
+\end{itemize}
+
+\subsection{Model Selection Rationale}
+
+Three transformer architectures representing different efficiency-effectiveness trade-offs:
+
+\subsubsection{MiniLM-L12-H384-uncased}
+\begin{itemize}
+    \item \textbf{Architecture}: Compact model (384 hidden dimensions, 12 layers)
+    \item \textbf{Design Focus}: Efficiency through knowledge distillation from larger BERT models
+    \item \textbf{Context Length}: Standard 512 tokens
+    \item \textbf{Use Case}: Resource-constrained environments requiring fast inference
+\end{itemize}
+
+\subsubsection{GTE-multilingual-base}
+\begin{itemize}
+    \item \textbf{Architecture}: Multilingual encoder with transformer++ backbone (BERT + RoPE + GLU)
+    \item \textbf{Context Support}: 8192 tokens for long document processing
+    \item \textbf{Language Coverage}: 75+ languages with strong cross-lingual capabilities
+    \item \textbf{Training Data}: Diverse multilingual corpora for robust text understanding
+\end{itemize}
+
+\subsubsection{ModernBERT-base}
+\begin{itemize}
+    \item \textbf{Architecture}: State-of-the-art encoder with advanced optimizations
+    \item \textbf{Key Features}: RoPE, Flash Attention, GeGLU activations
+    \item \textbf{Context Length}: 8192 tokens with efficient long-context processing
+    \item \textbf{Training Scale}: 2 trillion tokens for comprehensive language understanding
 \end{itemize}
 
 \subsection{Experimental Design}
-\textbf{Training Setup}: Modal cloud platform with NVIDIA A100-80GB GPUs, batch size 16, 3 epochs, MS MARCO passage dataset.
 
-\textbf{Optimizer Configurations}:
+\subsubsection{Training Configuration}
+
+\textbf{Infrastructure}: Modal cloud platform with NVIDIA A100-80GB GPUs providing consistent computational environment
+
+\textbf{Training Parameters}:
 \begin{itemize}
-    \item \textbf{AdamW}: Learning rates 2e-5 (MiniLM, GTE), 2e-6 (ModernBERT), weight decay 0.01
-    \item \textbf{Lion}: Same learning rates, β₁=0.9, β₂=0.99, sign-based momentum updates
+    \item \textbf{Batch Size}: 16 per GPU for memory efficiency
+    \item \textbf{Training Duration}: 3 epochs with checkpoint evaluation after each epoch
+    \item \textbf{Dataset}: MS MARCO passage ranking triplets (~2M query-passage pairs)
+    \item \textbf{Precision}: BF16 for improved training efficiency
+    \item \textbf{Random Seed}: 12 for reproducible results
 \end{itemize}
 
-\textbf{Evaluation}: TREC 2019 DL Track and MS MARCO dev set using NDCG@10, MAP, MRR@10 metrics.
+\subsubsection{Optimizer Configuration Details}
+
+\textbf{AdamW Configuration}:
+\begin{itemize}
+    \item \textbf{Learning Rates}: 
+    \begin{itemize}
+        \item 2e-5 for MiniLM and GTE (standard rate)
+        \item 2e-5 for ModernBERT (baseline comparison)
+    \end{itemize}
+    \item \textbf{Weight Decay}: 0.01 for regularization
+    \item \textbf{Beta Parameters}: β₁=0.9, β₂=0.999 (default values)
+    \item \textbf{Scheduler}: Linear warmup for 10\% of training steps
+\end{itemize}
+
+\textbf{Lion Configuration}:
+\begin{itemize}
+    \item \textbf{Learning Rates}: 
+    \begin{itemize}
+        \item 2e-5 for MiniLM and GTE (consistency with AdamW)
+        \item 2e-6 for ModernBERT (optimized based on architecture characteristics)
+    \end{itemize}
+    \item \textbf{Beta Parameters}: β₁=0.9, β₂=0.99 (recommended values)
+    \item \textbf{Weight Decay}: 0.01 for fair comparison
+    \item \textbf{Scheduler}: Cosine Annealing for ModernBERT, linear for others
+\end{itemize}
+
+\subsection{Evaluation Protocol}
+
+\subsubsection{Datasets and Metrics}
+
+\textbf{Primary Evaluation}: TREC 2019 Deep Learning Track passage ranking
+\begin{itemize}
+    \item \textbf{Query Set}: 43 queries with graded relevance judgments
+    \item \textbf{Candidate Retrieval}: Top-1000 BM25 candidates per query
+    \item \textbf{Metrics}: NDCG@10, MAP, Recall@10, R-Precision, P@10
+\end{itemize}
+
+\textbf{Secondary Evaluation}: MS MARCO passage development set
+\begin{itemize}
+    \item \textbf{Focus Metric}: MRR@10 (Mean Reciprocal Rank at cutoff 10)
+    \item \textbf{Purpose}: Complementary perspective on larger query set
+\end{itemize}
+
+\subsubsection{Evaluation Framework}
+
+\begin{itemize}
+    \item \textbf{Reranking Process}: Cross-encoder scoring of BM25 candidate sets
+    \item \textbf{Evaluation Tools}: Standard trec\_eval for consistent metric calculation
+    \item \textbf{Checkpoint Strategy}: Evaluation after each training epoch
+    \item \textbf{Performance Tracking}: Weights \& Biases for experiment monitoring
+\end{itemize}
+
+\subsection{Controlled Variables and Experimental Validity}
+
+\begin{itemize}
+    \item \textbf{Hardware Consistency}: All experiments on identical A100-80GB GPUs
+    \item \textbf{Software Environment}: Standardized Modal containers with fixed library versions
+    \item \textbf{Data Consistency}: Identical training and evaluation data across all configurations
+    \item \textbf{Random Seed Control}: Fixed seed for reproducible initialization and data shuffling
+    \item \textbf{Hyperparameter Documentation}: Complete parameter logging for replication
+\end{itemize}
 
 %----------------------------------------------------------------------------------------
 
