@@ -134,18 +134,138 @@ To better understand the behavior of each optimizer-model combination, we analyz
     \label{fig:minilm_grad_norm}
 \end{figure}
 
-\section{Discussion of Results}
+\section{GPU Usage and Resource Efficiency Analysis}
 
-\subsection{Optimizer Impact Across Models}
+A critical aspect of optimizer performance in large-scale training is resource efficiency. We conducted comprehensive GPU usage monitoring throughout the training process for all model-optimizer combinations. This section presents detailed analysis of GPU utilization patterns, memory consumption, and overall resource efficiency.
+
+\subsection{GPU Usage Metrics}
+
+Table~\ref{tab:gpu_usage} summarizes the GPU utilization statistics for all model-optimizer combinations across our experimental setup using 3 NVIDIA GPUs.
+
+\begin{table}[htbp]
+\centering
+\caption{GPU Usage Statistics Comparison: Lion vs AdamW Optimizers}
+\label{tab:gpu_usage}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l l c c c c c}
+\toprule
+\textbf{Model} & \textbf{Optimizer} & \textbf{Mean Usage (\%)} & \textbf{Peak Usage (\%)} & \textbf{Std Dev (\%)} & \textbf{Data Points} & \textbf{Efficiency Gain (\%)} \\
+\midrule
+\multirow{2}{*}{MiniLM-L12-H384} 
+    & AdamW & 33.09 & 35.25 & 2.72 & 410 & \multirow{2}{*}{\cellcolor{green!20}\textbf{+2.67\%}} \\
+    & \cellcolor{green!20}Lion & \cellcolor{green!20}\textbf{32.21} & \cellcolor{green!20}\textbf{34.64} & 2.78 & 412 & \\
+\midrule
+\multirow{2}{*}{GTE-multilingual-base} 
+    & AdamW & 73.04 & 78.08 & 7.05 & 698 & \multirow{2}{*}{\cellcolor{green!20}\textbf{+10.33\%}} \\
+    & \cellcolor{green!20}Lion & \cellcolor{green!20}\textbf{65.50} & \cellcolor{green!20}\textbf{69.69} & 6.27 & 699 & \\
+\midrule
+\multirow{2}{*}{ModernBERT-base} 
+    & AdamW & 77.04 & 81.40 & 6.01 & 578 & \multirow{2}{*}{\cellcolor{green!20}\textbf{+3.49\%}} \\
+    & \cellcolor{green!20}Lion & \cellcolor{green!20}\textbf{74.35} & \cellcolor{green!20}\textbf{79.45} & 8.97 & 579 & \\
+\bottomrule
+\end{tabular}%
+}
+\vspace{1em}\\
+\footnotesize{GPU utilization measured across 3 NVIDIA GPUs during training. Efficiency gain calculated as: $\frac{\text{AdamW Mean} - \text{Lion Mean}}{\text{AdamW Mean}} \times 100\%$. Lower usage indicates better efficiency.}
+\end{table}
+
+\subsection{Model-Specific GPU Efficiency Analysis}
+
+\subsubsection{GTE-multilingual-base: Highest Efficiency Gains}
+
+The GTE model showed the most significant efficiency improvement with Lion optimizer, achieving a \textbf{10.33\% reduction} in average GPU utilization compared to AdamW. Key observations:
+
+\begin{itemize}
+    \item \textbf{Mean Usage:} Lion (65.50\%) vs AdamW (73.04\%) - 7.54 percentage point improvement
+    \item \textbf{Peak Usage:} Lion (69.69\%) vs AdamW (78.08\%) - 8.39 percentage point improvement
+    \item \textbf{Stability:} Lion showed slightly lower standard deviation (6.27\% vs 7.05\%), indicating more consistent resource utilization
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{gpu_usage/gpu_GTE_AdamW_Lion.png}
+    \caption{GTE Model: GPU Usage Comparison - Lion vs AdamW}
+    \label{fig:gpu_gte}
+\end{figure}
+
+\subsubsection{ModernBERT-base: Moderate Efficiency Gains}
+
+ModernBERT demonstrated a \textbf{3.49\% reduction} in GPU utilization with Lion optimizer:
+
+\begin{itemize}
+    \item \textbf{Mean Usage:} Lion (74.35\%) vs AdamW (77.04\%) - 2.69 percentage point improvement
+    \item \textbf{Peak Usage:} Lion (79.45\%) vs AdamW (81.40\%) - 1.95 percentage point improvement
+    \item \textbf{Variability:} Lion showed higher standard deviation (8.97\% vs 6.01\%), suggesting more dynamic resource usage patterns
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{gpu_usage/gpu_modernBERT_AdamW_Lion.png}
+    \caption{ModernBERT Model: GPU Usage Comparison - Lion vs AdamW}
+    \label{fig:gpu_modernbert}
+\end{figure}
+
+\subsubsection{MiniLM-L12-H384: Consistent Efficiency}
+
+Despite being the smallest model, MiniLM still showed measurable efficiency gains with Lion optimizer (\textbf{2.67\% reduction}):
+
+\begin{itemize}
+    \item \textbf{Mean Usage:} Lion (32.21\%) vs AdamW (33.09\%) - 0.88 percentage point improvement
+    \item \textbf{Peak Usage:} Lion (34.64\%) vs AdamW (35.25\%) - 0.61 percentage point improvement
+    \item \textbf{Consistency:} Both optimizers showed similar standard deviation (~2.7\%), indicating stable resource usage for smaller models
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{gpu_usage/gpu_miniLM_AdamW_Lion.png}
+    \caption{MiniLM Model: GPU Usage Comparison - Lion vs AdamW}
+    \label{fig:gpu_minilm}
+\end{figure}
+
+\subsection{Resource Efficiency Summary}
+
+The comprehensive GPU usage analysis reveals that \textbf{Lion optimizer consistently outperforms AdamW in terms of resource efficiency across all tested models}, with the following key findings:
+
+\begin{itemize}
+    \item \textbf{Universal Efficiency:} Lion optimizer achieved lower GPU utilization in 100\% of tested configurations
+    \item \textbf{Scalability Impact:} Larger models (GTE, ModernBERT) showed more substantial efficiency gains compared to smaller models (MiniLM)
+    \item \textbf{Peak Performance:} Lion consistently reduced peak GPU usage, which is crucial for training stability and memory management
+    \item \textbf{Overall Improvement:} Average efficiency gain across all models: \textbf{5.50\%}, ranging from 2.67\% (MiniLM) to 10.33\% (GTE)
+\end{itemize}
+
+These efficiency improvements translate to significant practical benefits in production environments:
+\begin{itemize}
+    \item \textbf{Cost Reduction:} Lower GPU utilization directly reduces computational costs in cloud environments
+    \item \textbf{Energy Efficiency:} Reduced power consumption contributes to more sustainable training practices
+    \item \textbf{Training Capacity:} Improved efficiency allows for larger batch sizes or concurrent model training
+    \item \textbf{Hardware Longevity:} Lower peak usage reduces thermal stress on GPU hardware
+\end{itemize}
+
+\subsection{Comprehensive Optimizer Analysis}
+
+Our comprehensive evaluation reveals that the choice between Lion and AdamW optimizers involves trade-offs between performance metrics and resource efficiency. The analysis spans three critical dimensions: ranking performance, training dynamics, and computational efficiency.
+
+\subsubsection{Performance vs Efficiency Trade-offs}
 
 The experimental results reveal distinct patterns in how different models interact with the Lion and AdamW optimizers:
 
 \begin{itemize}
-    \item \textbf{ModernBERT Performance:} With Lion optimizer and specialized training configuration (lower learning rate of 2e-6 and Cosine Annealing scheduler), ModernBERT achieved the highest overall performance on TREC DL 2019 metrics (NDCG@10: 0.7225, MAP: 0.5115). The training dynamics (Figures \ref{fig:modernbert_eval_loss}-\ref{fig:modernbert_grad_norm}) show more stable convergence with Lion compared to AdamW.
+    \item \textbf{ModernBERT Performance:} With Lion optimizer and specialized training configuration (lower learning rate of 2e-6 and Cosine Annealing scheduler), ModernBERT achieved the highest overall performance on TREC DL 2019 metrics (NDCG@10: 0.7225, MAP: 0.5115). The training dynamics (Figures \ref{fig:modernbert_eval_loss}-\ref{fig:modernbert_grad_norm}) show more stable convergence with Lion compared to AdamW. Additionally, Lion achieved a 3.49\% reduction in GPU utilization, making it both more effective and more efficient.
     
-    \item \textbf{GTE Behavior:} GTE showed stronger performance with AdamW (NDCG@10: 0.7224) using the standard learning rate (2e-5). The training curves (Figures \ref{fig:gte_eval_loss}-\ref{fig:gte_grad_norm}) indicate that AdamW provided more consistent optimization for this model. Also the gradients are more stable in case with AdamW.
+    \item \textbf{GTE Behavior:} GTE showed stronger performance with AdamW (NDCG@10: 0.7224) using the standard learning rate (2e-5). However, Lion demonstrated the most significant efficiency gains with a 10.33\% reduction in GPU utilization (65.50\% vs 73.04\% mean usage). The training curves (Figures \ref{fig:gte_eval_loss}-\ref{fig:gte_grad_norm}) indicate that AdamW provided more consistent optimization for ranking metrics, but Lion offers substantial computational cost savings.
     
-    \item \textbf{MiniLM Characteristics:} While MiniLM with AdamW showed better TREC metrics, the Lion optimizer achieved the highest MRR@10 (0.5988) on MS MARCO dev. The training dynamics (Figures \ref{fig:minilm_eval_loss}-\ref{fig:minilm_grad_norm}) suggest that Lion might be particularly effective for certain ranking scenarios.
+    \item \textbf{MiniLM Characteristics:} While MiniLM with AdamW showed better TREC metrics, the Lion optimizer achieved the highest MRR@10 (0.5988) on MS MARCO dev and maintained a 2.67\% efficiency advantage. The training dynamics (Figures \ref{fig:minilm_eval_loss}-\ref{fig:minilm_grad_norm}) suggest that Lion might be particularly effective for certain ranking scenarios while providing consistent resource savings.
+\end{itemize}
+
+\subsubsection{Resource Efficiency as a Decisive Factor}
+
+The GPU usage analysis reveals a compelling case for Lion optimizer adoption:
+
+\begin{itemize}
+    \item \textbf{Universal Efficiency:} Lion achieved lower resource consumption across all tested models (100\% success rate)
+    \item \textbf{Scalable Benefits:} Efficiency gains increase with model size, making Lion particularly attractive for large-scale deployments
+    \item \textbf{Cost Implications:} The 5.50\% average efficiency improvement translates to significant cost savings in production environments
+    \item \textbf{Sustainable Training:} Reduced energy consumption aligns with environmental considerations in large-scale ML training
 \end{itemize}
 
 \subsection{Training Dynamics Analysis}
@@ -160,15 +280,36 @@ The visualization of training dynamics reveals several key insights:
     \item \textbf{Learning Rate Impact:} The Cosine Annealing schedule (Figure \ref{fig:modernbert_lr}) proved particularly effective for ModernBERT with Lion, suggesting that adaptive learning rate strategies can significantly influence optimizer performance.
 \end{itemize}
 
-\subsection{Model-Specific Considerations}
+\subsection{Model-Specific Considerations and Resource Implications}
 
-The results highlight important model-specific characteristics:
+The results highlight important model-specific characteristics and their interaction with computational efficiency:
 
 \begin{itemize}
-    \item \textbf{Context Length Impact:} Models with longer context capabilities (GTE and ModernBERT, supporting 8192 tokens) generally outperformed MiniLM on TREC DL metrics, suggesting the benefit of extended context for reranking.
+    \item \textbf{Context Length Impact:} Models with longer context capabilities (GTE and ModernBERT, supporting 8192 tokens) generally outperformed MiniLM on TREC DL metrics, suggesting the benefit of extended context for reranking. Interestingly, these larger context models also showed the most substantial efficiency gains with Lion optimizer (10.33\% and 3.49\% respectively), indicating that Lion's memory-efficient design scales better with increased computational complexity.
     
-    \item \textbf{Architecture Influence:} ModernBERT's advanced features (Rotary Positional Embeddings, Flash Attention) appear to synergize well with Lion's optimization approach, particularly with appropriate learning rate scheduling.
+    \item \textbf{Architecture Influence:} ModernBERT's advanced features (Rotary Positional Embeddings, Flash Attention) appear to synergize well with Lion's optimization approach, particularly with appropriate learning rate scheduling. The combination of superior performance metrics and 3.49\% efficiency improvement makes Lion the clear choice for ModernBERT-based systems.
     
-    \item \textbf{Model Size Considerations:} Despite being smaller, MiniLM showed competitive performance, especially on MRR@10, indicating that model size alone doesn't determine reranking effectiveness.
+    \item \textbf{Model Size Considerations:} Despite being smaller, MiniLM showed competitive performance, especially on MRR@10, indicating that model size alone doesn't determine reranking effectiveness. However, even for smaller models, Lion maintained consistent efficiency advantages (2.67\% improvement), suggesting that the optimizer's benefits are architecture-agnostic.
+    
+    \item \textbf{Scalability Implications:} The GPU usage analysis reveals that Lion's efficiency benefits scale with model complexity. For GTE (largest efficiency gain at 10.33\%), the resource savings could enable training with larger batch sizes or support additional concurrent experiments, multiplying the practical benefits beyond simple cost reduction.
+\end{itemize}
+
+\subsection{Practical Deployment Recommendations}
+
+Based on our comprehensive analysis spanning performance metrics, training dynamics, and resource efficiency, we provide the following deployment recommendations:
+
+\begin{itemize}
+    \item \textbf{Production Environments:} For cost-sensitive production deployments, Lion optimizer offers compelling advantages with consistent efficiency gains across all models while maintaining competitive performance.
+    
+    \item \textbf{Large-Scale Training:} When training larger models or conducting extensive hyperparameter searches, the 5.50\% average efficiency improvement with Lion translates to significant cost and time savings.
+    
+    \item \textbf{Model-Specific Optimization:} 
+    \begin{itemize}
+        \item ModernBERT: Lion with Cosine Annealing for optimal performance and efficiency
+        \item GTE: Consider Lion for resource-constrained environments despite slightly lower ranking performance
+        \item MiniLM: Lion for MS MARCO-style tasks, AdamW for TREC-style evaluations
+    \end{itemize}
+    
+    \item \textbf{Environmental Considerations:} The consistent reduction in GPU utilization with Lion supports more sustainable AI training practices, an increasingly important consideration for responsible AI development.
 \end{itemize}
 

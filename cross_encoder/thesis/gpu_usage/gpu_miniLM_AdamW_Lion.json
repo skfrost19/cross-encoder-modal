@@ -1,0 +1,26 @@
+{
+  "file_name": "gpu_miniLM_AdamW_Lion",
+  "optimizers": {
+    "Lion": {
+      "mean_usage": 32.21193455966176,
+      "std_usage": 2.7814055555963715,
+      "peak_usage": 34.63738386732656,
+      "min_usage": 23.01688084281207,
+      "num_gpus": 3,
+      "data_points": 412
+    },
+    "AdamW": {
+      "mean_usage": 33.09475794354192,
+      "std_usage": 2.720967869548064,
+      "peak_usage": 35.25241671731643,
+      "min_usage": 23.633360828919574,
+      "num_gpus": 3,
+      "data_points": 410
+    }
+  },
+  "comparison": {
+    "mean_difference": -0.882823383880158,
+    "peak_difference": -0.6150328499898663,
+    "more_efficient": "Lion"
+  }
+}

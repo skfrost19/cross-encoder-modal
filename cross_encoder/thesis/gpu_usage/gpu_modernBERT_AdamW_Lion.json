@@ -1,0 +1,26 @@
+{
+  "file_name": "gpu_modernBERT_AdamW_Lion",
+  "optimizers": {
+    "AdamW": {
+      "mean_usage": 77.03968890979976,
+      "std_usage": 6.012134871484453,
+      "peak_usage": 81.39869323608578,
+      "min_usage": 40.780476686637144,
+      "num_gpus": 3,
+      "data_points": 578
+    },
+    "Lion": {
+      "mean_usage": 74.35190796274277,
+      "std_usage": 8.970123140935524,
+      "peak_usage": 79.45084802176494,
+      "min_usage": 25.361784029405808,
+      "num_gpus": 3,
+      "data_points": 579
+    }
+  },
+  "comparison": {
+    "mean_difference": 2.687780947056993,
+    "peak_difference": 1.9478452143208358,
+    "more_efficient": "Lion"
+  }
+}

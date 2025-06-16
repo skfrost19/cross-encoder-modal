@@ -1,0 +1,26 @@
+{
+  "file_name": "gpu_GTE_AdamW_Lion",
+  "optimizers": {
+    "AdamW": {
+      "mean_usage": 73.04453399687634,
+      "std_usage": 7.049060760142465,
+      "peak_usage": 78.08185725449336,
+      "min_usage": 46.962642181123556,
+      "num_gpus": 3,
+      "data_points": 698
+    },
+    "Lion": {
+      "mean_usage": 65.50321035642328,
+      "std_usage": 6.265260853417713,
+      "peak_usage": 69.68741520824854,
+      "min_usage": 42.22167107583775,
+      "num_gpus": 3,
+      "data_points": 699
+    }
+  },
+  "comparison": {
+    "mean_difference": 7.541323640453058,
+    "peak_difference": 8.39444204624482,
+    "more_efficient": "Lion"
+  }
+}
