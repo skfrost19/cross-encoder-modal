@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thesis Defense - Cross-Encoder Optimizer Comparison</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --accent-color: #3b82f6;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
+            --text-color: #334155;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--gradient-1);
+            color: var(--text-color);
+            overflow: hidden;
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 1.5rem;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            background: white;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Adjust breakthrough results slide for better fit */
+        .slide:nth-child(9) {
+            padding: 1rem;
+        }
+        .slide:nth-child(9) h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .slide:nth-child(9) h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slide.prev {
+            transform: translateX(-100%);
+        }        /* Slide-specific backgrounds */
+        .slide:nth-child(1) { background: var(--gradient-1); color: white; }
+        .slide:nth-child(2) { background: var(--gradient-2); color: white; }
+        .slide:nth-child(3) { background: var(--gradient-3); color: white; }
+        .slide:nth-child(4) { background: var(--gradient-4); color: var(--dark-color); }
+        .slide:nth-child(8) { background: var(--gradient-2); color: white; }
+        .slide:nth-child(9) { background: var(--gradient-3); color: white; }
+        .slide:nth-child(10) { background: var(--gradient-4); color: var(--dark-color); }
+
+        /* Fix text visibility for gradient background slides */
+        .slide:nth-child(2) h2, .slide:nth-child(3) h2, .slide:nth-child(9) h2 {
+            color: white !important;
+        }
+        .slide:nth-child(2) h3, .slide:nth-child(3) h3, .slide:nth-child(9) h3 {
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            line-height: 1.2;
+            animation: slideInDown 0.8s ease-out;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            text-align: center;
+            animation: slideInDown 0.8s ease-out 0.2s both;
+        }
+
+        h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+            animation: slideInLeft 0.8s ease-out 0.4s both;
+        }
+
+        .slide h2, .slide h3 {
+            color: inherit;
+        }
+
+        p, li {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 0.8rem;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 3rem;
+            text-align: center;
+            animation: slideInUp 0.8s ease-out 0.4s both;
+        }
+
+        .author-info {
+            text-align: center;
+            margin-top: 2rem;
+            animation: fadeIn 1s ease-out 0.8s both;
+        }
+
+        .author-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .author-info p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            width: 100%;
+            max-width: 1200px;
+            animation: slideInUp 0.8s ease-out 0.4s both;
+        }
+
+        .content-column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .highlight-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: bounceIn 0.8s ease-out 0.6s both;
+        }
+
+        .research-problem {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(99, 102, 241, 0.2));
+            padding: 2rem;
+            border-radius: 15px;
+            border-left: 5px solid var(--accent-color);
+            font-size: 1.3rem;
+            font-style: italic;
+            text-align: center;
+            margin: 2rem 0;
+            animation: pulse 2s infinite;
+        }
+
+        .objectives-list {
+            list-style: none;
+            counter-reset: objective-counter;
+        }
+
+        .objectives-list li {
+            counter-increment: objective-counter;
+            padding: 1rem 0;
+            position: relative;
+            padding-left: 3rem;
+            animation: slideInRight 0.8s ease-out calc(0.8s + var(--delay, 0) * 0.2s) both;
+        }
+
+        .objectives-list li::before {
+            content: counter(objective-counter);
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--accent-color);
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .architecture-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .flow-step {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            animation: slideInUp 0.8s ease-out calc(0.6s + var(--delay, 0) * 0.2s) both;
+        }
+
+        .flow-arrow {
+            font-size: 2rem;
+            color: var(--accent-color);
+            animation: bounce 2s infinite;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            animation: slideInUp 0.8s ease-out 0.6s both;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .comparison-table th {
+            background: rgba(0, 0, 0, 0.2);
+            font-weight: 600;
+            color: white;
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.02);
+            transition: all 0.3s ease;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: var(--light-color);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            animation: slideInUp 0.8s ease-out 0.6s both;
+            font-size: 0.9rem;
+        }
+
+        .results-table th,
+        .results-table td {
+            padding: 0.75rem;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+            color: var(--text-color);
+        }
+
+        .results-table th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .results-table tr:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .best-score {
+            background: var(--success-color);
+            color: white;
+            font-weight: bold;
+            border-radius: 5px;
+            padding: 0.3rem;
+        }
+
+        .trophy {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+
+        .efficiency-card {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            margin: 1rem;
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.3);
+            animation: bounceIn 0.8s ease-out calc(0.6s + var(--delay, 0) * 0.2s) both;
+        }
+
+        .efficiency-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 1rem 0;
+            animation: countUp 2s ease-out 1s both;
+        }        .insight-card {
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--text-color);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 0.5rem 0;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid var(--accent-color);
+            animation: slideInLeft 0.8s ease-out calc(0.6s + var(--delay, 0) * 0.2s) both;
+            font-size: 0.9rem;
+        }
+
+        .key-finding {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            margin: 2rem 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            box-shadow: 0 15px 35px rgba(245, 158, 11, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+            z-index: 1000;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: var(--accent-color);
+            transition: width 0.6s ease;
+            z-index: 1000;
+        }
+
+        .advantages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .advantage-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: bounceIn 0.8s ease-out calc(0.6s + var(--delay, 0) * 0.2s) both;
+        }
+
+        .recommendation-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .recommendation-card {
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--text-color);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            animation: slideInUp 0.8s ease-out calc(0.6s + var(--delay, 0) * 0.2s) both;
+        }
+
+        .recommendation-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounceIn {
+            0%, 20%, 40%, 60%, 80% {
+                transform: translateY(0);
+                animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+            }
+            0% {
+                opacity: 0;
+                transform: scale(0.3) translateY(0);
+            }
+            20% {
+                transform: scale(1.1);
+            }
+            40% {
+                transform: scale(0.9);
+            }
+            60% {
+                opacity: 1;
+                transform: scale(1.03);
+            }
+            80% {
+                transform: scale(0.97);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Responsive Design */        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.5rem; }
+            h3 { font-size: 1.2rem; }
+            p, li { font-size: 0.9rem; }
+            
+            .slide {
+                padding: 1rem;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 0 0.5rem;
+            }
+            
+            .efficiency-card {
+                padding: 1rem;
+                margin: 0.25rem;
+            }
+            
+            .efficiency-number {
+                font-size: 1.5rem;
+            }
+            
+            .results-table {
+                font-size: 0.8rem;
+            }
+            
+            .results-table th,
+            .results-table td {
+                padding: 0.5rem;
+            }
+            
+            .insight-card {
+                padding: 1rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .efficiency-card {
+                padding: 1.25rem;
+            }
+            
+            .efficiency-number {
+                font-size: 1.75rem;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .content-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+        }
+
+        /* Adjustments for better vertical spacing */
+        .slide > h2 {
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .slide > h3 {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Ensure content doesn't overflow horizontally */
+        .presentation-container {
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+
+        /* Add smooth scrolling for better UX */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="slide-counter" id="slideCounter">1 / 18</div>
+    
+    <div class="presentation-container">
+        <!-- Slide 1: Title Slide -->
+        <div class="slide active">
+            <h1>Comparative Analysis of Lion and AdamW Optimizers for Cross-Encoder Reranking</h1>
+            <p class="subtitle">with MiniLM, GTE, and ModernBERT</p>
+            
+            <div class="author-info">
+                <h3>Shahil Kumar (MML2023008)</h3>
+                <p>Supervisor: Dr. Muneendra Ojha</p>
+                <p>Master of Technology in Information Technology</p>
+                <p>Specialization: Machine Learning and Intelligent Systems</p>
+                <p>Indian Institute of Information Technology, Allahabad</p>
+                <p>June 17, 2025</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Research Overview & Motivation -->
+        <div class="slide">
+            <h2>Research Overview & Motivation</h2>
+            
+            <div class="content-grid">
+                <div class="content-column">
+                    <h3>Why This Research Matters</h3>
+                    <div class="highlight-box">
+                        <p style="color: black;"><strong>Information Retrieval Challenge:</strong> Modern IR systems require precise document ranking from vast collections</p>
+                        <p style="color: black;"><strong>Cross-Encoder Advantage:</strong> State-of-the-art reranking through deep query-document interactions</p>
+                        <p style="color: black;"><strong>Optimization Gap:</strong> Limited research on Lion optimizer for IR tasks despite success in other domains</p>
+                        <p style="color: black;"><strong>Practical Impact:</strong> Optimizer choice significantly affects training cost and model performance</p>
+                    </div>
+                </div>
+                
+                <div class="content-column">
+                    <div class="research-problem">
+                        <strong>Research Problem:</strong><br>
+                        How do Lion and AdamW optimizers compare across different cross-encoder architectures for information retrieval tasks?
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Research Objectives -->
+        <div class="slide">
+            <h2>Research Objectives</h2>
+            
+            <div class="content-grid">
+                <div class="content-column">
+                    <h3>Primary Objectives</h3>
+                    <ol class="objectives-list">
+                        <li style="--delay: 0"><strong>Systematic Evaluation:</strong> Compare Lion and AdamW across three transformer architectures</li>
+                        <li style="--delay: 1"><strong>Comprehensive Benchmarking:</strong> Evaluate performance using standard IR metrics on TREC DL 2019 and MS MARCO</li>
+                        <li style="--delay: 2"><strong>Training Dynamics Analysis:</strong> Investigate convergence patterns and stability</li>
+                        <li style="--delay: 3"><strong>Practical Guidelines:</strong> Provide evidence-based recommendations for optimizer selection</li>
+                    </ol>
+                </div>
+                
+                <div class="content-column">
+                    <h3>Expected Contributions</h3>
+                    <div class="highlight-box">
+                        <p>• Empirical evidence comparing optimizers across multiple architectures</p>
+                        <p>• Optimization guidelines for cross-encoder training in IR</p>
+                        <p>• Analysis of training efficiency and resource utilization</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Cross-Encoder Architecture -->
+        <div class="slide">
+            <h2>Cross-Encoder Architecture</h2>
+            
+            <h3>How Cross-Encoders Work</h3>
+            <div class="architecture-flow">
+                <div class="flow-step" style="--delay: 0">[CLS] query [SEP]</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step" style="--delay: 1">document [SEP]</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step" style="--delay: 2">Transformer</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step" style="--delay: 3">Relevance Score</div>
+            </div>
+
+            <div class="content-grid">
+                <div class="content-column">
+                    <h3>Key Advantages</h3>
+                    <div class="advantages-grid">
+                        <div class="advantage-card" style="--delay: 0">
+                            <strong>Deep Interaction</strong><br>
+                            Simultaneous query-document processing
+                        </div>
+                        <div class="advantage-card" style="--delay: 1">
+                            <strong>Token-level Attention</strong><br>
+                            Rich semantic interactions
+                        </div>
+                        <div class="advantage-card" style="--delay: 2">
+                            <strong>Superior Accuracy</strong><br>
+                            Better than bi-encoder approaches
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="content-column">
+                    <h3>Architecture Components</h3>
+                    <ol class="objectives-list">
+                        <li style="--delay: 0">Input concatenation with special tokens</li>
+                        <li style="--delay: 1">Transformer encoding layers</li>
+                        <li style="--delay: 2">Classification head on [CLS] token</li>
+                        <li style="--delay: 3">Sigmoid activation for scoring</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Model Architectures Tested -->
+        <div class="slide">
+            <h2>Model Architectures Tested</h2>
+            <h3>Three Distinct Architectures</h3>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Parameters</th>
+                        <th>Context Length</th>
+                        <th>Key Features</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>MiniLM-L12-H384</strong></td>
+                        <td>~33M</td>
+                        <td>512 tokens</td>
+                        <td>Efficient baseline, knowledge distillation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GTE-multilingual-base</strong></td>
+                        <td>~305M</td>
+                        <td>8192 tokens</td>
+                        <td>Extended context, multilingual support</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ModernBERT-base</strong></td>
+                        <td>~149M</td>
+                        <td>8192 tokens</td>
+                        <td>RoPE, Flash Attention, GeGLU</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="content-grid">
+                <div class="content-column">
+                    <div class="insight-card" style="--delay: 0">
+                        <strong>MiniLM:</strong> Efficiency-focused for resource-constrained scenarios
+                    </div>
+                </div>
+                <div class="content-column">
+                    <div class="insight-card" style="--delay: 1">
+                        <strong>GTE:</strong> Extended context for comprehensive document analysis
+                    </div>
+                </div>
+            </div>
+            <div class="insight-card" style="--delay: 2">
+                <strong>ModernBERT:</strong> State-of-the-art with advanced architectural innovations
+            </div>
+        </div>
+
+        <!-- Slide 6: Optimizer Comparison -->
+        <div class="slide">
+            <h2>Optimizer Comparison</h2>
+            <h3>AdamW vs Lion: Key Differences</h3>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>AdamW</th>
+                        <th>Lion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Update Rule</strong></td>
+                        <td>Adaptive learning rates with momentum</td>
+                        <td>Sign-based momentum</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Memory Usage</strong></td>
+                        <td>Higher (stores gradients + variance)</td>
+                        <td>Lower (momentum only)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Computation</strong></td>
+                        <td>Complex adaptive scaling</td>
+                        <td>Simple sign operation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tuning</strong></td>
+                        <td>Well-established hyperparameters</td>
+                        <td>Requires careful tuning</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Novelty</strong></td>
+                        <td>Standard for transformers</td>
+                        <td>Recent innovation</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="key-finding">
+                Lion's Innovation: update = sign(momentum) × learning_rate
+            </div>
+        </div>
+
+        <!-- Slide 7: Experimental Setup -->
+        <div class="slide">
+            <h2>Experimental Setup</h2>
+            
+            <div class="content-grid">
+                <div class="content-column">
+                    <h3>Dataset Configuration</h3>
+                    <div class="highlight-box">
+                        <p><strong>Training:</strong> MS MARCO Passage Ranking (~500K query-passage pairs)</p>
+                        <p><strong>Evaluation:</strong> TREC DL 2019 (43 queries with comprehensive relevance judgments)</p>
+                        <p><strong>Metrics:</strong> NDCG@10, MAP, MRR@10, Recall@10, R-Precision, P@10</p>
+                    </div>
+                    
+                    <h3>Infrastructure</h3>
+                    <div class="highlight-box">
+                        <p><strong>Platform:</strong> Modal cloud computing</p>
+                        <p><strong>Hardware:</strong> 3 × NVIDIA L40S GPUs</p>
+                        <p><strong>Monitoring:</strong> Weights & Biases</p>
+                        <p><strong>Training:</strong> 3 epochs per configuration</p>
+                    </div>
+                </div>
+                
+                <div class="content-column">
+                    <h3>Experimental Design</h3>
+                    <div class="highlight-box">
+                        <p><strong>Total Configurations:</strong> 6 (3 models × 2 optimizers)</p>
+                        <p><strong>Controlled Variables:</strong> Batch size, training steps, evaluation frequency</p>
+                        <p><strong>Variable Parameters:</strong> Learning rates (2e-5 standard, 2e-6 for ModernBERT+Lion)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Main Results - Performance Metrics -->
+        <div class="slide">
+            <h2>🎯 MAIN RESULTS - Performance Metrics</h2>
+            <h3>Complete Performance Comparison</h3>
+            
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Optimizer</th>
+                        <th>NDCG@10</th>
+                        <th>MAP</th>
+                        <th>MRR@10</th>
+                        <th>Recall@10</th>
+                        <th>P@10</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>MiniLM</strong></td>
+                        <td>AdamW</td>
+                        <td class="best-score">0.7127</td>
+                        <td class="best-score">0.4908</td>
+                        <td>0.5826</td>
+                        <td>0.1715</td>
+                        <td>0.8093</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MiniLM</strong></td>
+                        <td>Lion</td>
+                        <td>0.7031</td>
+                        <td>0.4858</td>
+                        <td class="best-score">0.5988</td>
+                        <td>0.1724</td>
+                        <td>0.8116</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GTE</strong></td>
+                        <td>AdamW</td>
+                        <td class="best-score">0.7224</td>
+                        <td class="best-score">0.5005</td>
+                        <td>0.5942</td>
+                        <td class="best-score">0.1733</td>
+                        <td>0.8163</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GTE</strong></td>
+                        <td>Lion</td>
+                        <td>0.6909</td>
+                        <td>0.4921</td>
+                        <td>0.5957</td>
+                        <td>0.1721</td>
+                        <td>0.8140</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ModernBERT</strong></td>
+                        <td>AdamW</td>
+                        <td>0.7105</td>
+                        <td>0.5066</td>
+                        <td>0.5916</td>
+                        <td>0.1678</td>
+                        <td>0.8163</td>
+                    </tr>
+                    <tr style="background: linear-gradient(135deg, #10b981, #059669); color: white;">
+                        <td><strong>ModernBERT</strong></td>
+                        <td><strong>Lion</strong></td>
+                        <td><span class="trophy">🏆</span><strong>0.7225</strong></td>
+                        <td><span class="trophy">🏆</span><strong>0.5121</strong></td>
+                        <td><span class="trophy">🏆</span><strong>0.5988</strong></td>
+                        <td>0.1732</td>
+                        <td><span class="trophy">🏆</span><strong>0.8256</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="key-finding">
+                🏆 Overall Winner: ModernBERT + Lion achieved highest performance in 4/6 metrics
+            </div>
+        </div>
+
+        <!-- Slide 9: Breakthrough Results - Resource Efficiency -->
+        <div class="slide">
+            <h2>🎯 BREAKTHROUGH RESULTS - Resource Efficiency</h2>
+            <h3>GPU Utilization Analysis - The Game Changer</h3>
+            
+            <div class="content-grid">
+                <div class="efficiency-card" style="--delay: 0">
+                    <h4>MiniLM</h4>
+                    <div class="efficiency-number">+2.67%</div>
+                    <p>Efficiency Gain</p>
+                    <p>33.09% → 32.21%</p>
+                </div>
+                <div class="efficiency-card" style="--delay: 1">
+                    <h4>GTE</h4>
+                    <div class="efficiency-number">+10.33%</div>
+                    <p>Efficiency Gain 🔥</p>
+                    <p>73.04% → 65.50%</p>
+                </div>
+                <div class="efficiency-card" style="--delay: 2">
+                    <h4>ModernBERT</h4>
+                    <div class="efficiency-number">+3.49%</div>
+                    <p>Efficiency Gain</p>
+                    <p>77.04% → 74.35%</p>
+                </div>
+            </div>
+            
+            <div class="key-finding">
+                Lion optimizer achieved lower GPU utilization in 100% of tested configurations
+            </div>
+            
+            <div class="content-grid">
+                <div class="insight-card" style="--delay: 0">
+                    <strong>Average Efficiency Gain:</strong> 5.50% across all models
+                </div>
+                <div class="insight-card" style="--delay: 1">
+                    <strong>Cost Reduction:</strong> Significant savings in cloud computing costs
+                </div>
+                <div class="insight-card" style="--delay: 2">
+                    <strong>Environmental Benefit:</strong> Reduced energy consumption for sustainable AI
+                </div>
+                <div class="insight-card" style="--delay: 3">
+                    <strong>Scalability:</strong> Larger models show greater efficiency gains
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Training Dynamics -->
+        <div class="slide">
+            <h2>🎯 TRAINING DYNAMICS - Visual Evidence</h2>
+            
+            <div class="content-grid">
+                <div class="content-column">
+                    <h3>Loss Convergence Patterns</h3>
+                    <div class="insight-card" style="--delay: 0">
+                        <strong>ModernBERT:</strong> Lion shows smoother evaluation loss convergence
+                    </div>
+                    <div class="insight-card" style="--delay: 1">
+                        <strong>GTE:</strong> AdamW provides more consistent optimization for ranking metrics
+                    </div>
+                    <div class="insight-card" style="--delay: 2">
+                        <strong>MiniLM:</strong> Both optimizers show stable convergence with different characteristics
+                    </div>
+                </div>
+                
+                <div class="content-column">
+                    <h3>Key Training Insights</h3>
+                    <div class="highlight-box">
+                        <p><strong>Gradient Behavior:</strong></p>
+                        <p>• Lion: More consistent gradient magnitudes</p>
+                        <p>• AdamW: Traditional adaptive behavior</p>
+                        <p>• Stability: Lion demonstrates superior stability</p>
+                    </div>
+                    
+                    <div class="highlight-box">
+                        <p><strong>Learning Rate Sensitivity:</strong></p>
+                        <p>• ModernBERT+Lion requires lower LR (2e-6)</p>
+                        <p>• Cosine Annealing particularly effective with Lion</p>
+                        <p>• Architecture-specific tuning required</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Architecture-Specific Insights -->
+        <div class="slide">
+            <h2>🎯 ARCHITECTURE-SPECIFIC INSIGHTS</h2>
+            
+            <div class="content-grid">
+                <div class="content-column">
+                    <div class="insight-card" style="--delay: 0; background: linear-gradient(135deg, #10b981, #059669); color: white;">
+                        <h4>ModernBERT: The Clear Winner</h4>
+                        <p>✅ Best Overall Performance: 4/6 metrics with Lion</p>
+                        <p>✅ 3.49% Efficiency Gain: Reduced GPU utilization</p>
+                        <p>✅ Advanced Features: RoPE, Flash Attention synergize with Lion</p>
+                        <p>✅ Stable Training: Smoother convergence patterns</p>
+                    </div>
+                    
+                    <div class="insight-card" style="--delay: 2; background: linear-gradient(135deg, #3b82f6, #1e40af); color: white;">
+                        <h4>MiniLM: Consistent Performer</h4>
+                        <p>✅ Stable Performance: Both optimizers perform well</p>
+                        <p>✅ MS MARCO Excellence: Lion achieves top MRR@10</p>
+                        <p>✅ Resource Efficient: Consistent 2.67% improvement</p>
+                        <p>✅ Practical Choice: Good baseline for smaller deployments</p>
+                    </div>
+                </div>
+                
+                <div class="content-column">
+                    <div class="insight-card" style="--delay: 1; background: linear-gradient(135deg, #f59e0b, #d97706); color: white;">
+                        <h4>GTE: Efficiency Champion</h4>
+                        <p>🔥 10.33% Efficiency Gain: Largest resource reduction</p>
+                        <p>⚖️ Performance Trade-off: Slightly lower ranking metrics</p>
+                        <p>💰 Cost-Effective: Ideal for budget-conscious deployments</p>
+                        <p>🌍 Sustainable Choice: Significant environmental benefits</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Statistical Significance & Validation -->
+        <div class="slide">
+            <h2>🎯 STATISTICAL SIGNIFICANCE & VALIDATION</h2>
+            
+            <div class="content-grid">
+                <div class="content-column">
+                    <h3>Robust Experimental Design</h3>
+                    <div class="highlight-box">
+                        <p><strong>Multiple Epochs:</strong> 3-epoch evaluation for stability assessment</p>
+                        <p><strong>Standard Datasets:</strong> TREC DL 2019 and MS MARCO for reproducibility</p>
+                        <p><strong>Controlled Variables:</strong> Systematic experimental design</p>
+                        <p><strong>Multiple Metrics:</strong> 6 different IR evaluation metrics</p>
+                    </div>
+                </div>
+                
+                <div class="content-column">
+                    <h3>Key Statistical Findings</h3>
+                    <div class="insight-card" style="--delay: 0">
+                        <strong>Consistency:</strong> Lion's efficiency gains are consistent across all models
+                    </div>
+                    <div class="insight-card" style="--delay: 1">
+                        <strong>Significance:</strong> Performance differences are meaningful and reproducible
+                    </div>
+                    <div class="insight-card" style="--delay: 2">
+                        <strong>Reliability:</strong> Results validated across different evaluation sets
+                    </div>
+                    <div class="insight-card" style="--delay: 3">
+                        <strong>Generalizability:</strong> Findings apply across diverse transformer architectures
+                    </div>
+                </div>
+            </div>
+            
+            <div class="key-finding">
+                Experimental Rigor: Infrastructure Consistency + Comprehensive Monitoring + Detailed Documentation
+            </div>
+        </div>
+
+        <!-- Slide 13: Practical Deployment Recommendations -->
+        <div class="slide">
+            <h2>🎯 PRACTICAL DEPLOYMENT RECOMMENDATIONS</h2>
+            
+            <div class="recommendation-grid">
+                <div class="recommendation-card" style="--delay: 0">
+                    <h4>Choose Lion When:</h4>
+                    <p>✅ Cost optimization is critical</p>
+                    <p>✅ Environmental sustainability matters</p>
+                    <p>✅ Using ModernBERT architecture</p>
+                    <p>✅ Large-scale training scenarios</p>
+                    <p>✅ Resource constraints exist</p>
+                </div>
+                
+                <div class="recommendation-card" style="--delay: 1">
+                    <h4>Choose AdamW When:</h4>
+                    <p>✅ Maximum ranking performance required for GTE</p>
+                    <p>✅ Well-established workflows preferred</p>
+                    <p>✅ Risk-averse environments</p>
+                    <p>✅ TREC-style evaluations prioritized</p>
+                </div>
+            </div>
+            
+            <h3>Model-Specific Guidelines</h3>
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Recommended Optimizer</th>
+                        <th>Key Benefit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>ModernBERT</strong></td>
+                        <td><strong>Lion</strong></td>
+                        <td>Best performance + efficiency</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GTE</strong></td>
+                        <td><strong>AdamW/Lion</strong></td>
+                        <td>AdamW for performance, Lion for cost</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MiniLM</strong></td>
+                        <td><strong>Lion</strong></td>
+                        <td>MS MARCO tasks, consistent efficiency</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Slide 14: Research Contributions & Impact -->
+        <div class="slide">
+            <h2>Research Contributions & Impact</h2>
+            
+            <div class="content-grid">
+                <div class="content-column">
+                    <h3>Novel Contributions to the Field</h3>
+                    <ol class="objectives-list">
+                        <li style="--delay: 0">🥇 <strong>First Systematic Study:</strong> Lion optimizer evaluation for cross-encoder IR tasks</li>
+                        <li style="--delay: 1">🔬 <strong>Architecture-Optimizer Interactions:</strong> Detailed analysis across multiple models</li>
+                        <li style="--delay: 2">📊 <strong>Comprehensive Benchmarking:</strong> Standard datasets with multiple evaluation metrics</li>
+                        <li style="--delay: 3">💰 <strong>Resource Efficiency Analysis:</strong> First GPU utilization study for IR optimizers</li>
+                        <li style="--delay: 4">📚 <strong>Training Dynamics Insights:</strong> Detailed convergence pattern analysis</li>
+                    </ol>
+                </div>
+                
+                <div class="content-column">
+                    <h3>Scientific Impact</h3>
+                    <div class="insight-card" style="--delay: 0">
+                        <strong>Methodology:</strong> Rigorous experimental design for optimizer comparison
+                    </div>
+                    <div class="insight-card" style="--delay: 1">
+                        <strong>Reproducibility:</strong> Complete implementation details and hyperparameters
+                    </div>
+                    <div class="insight-card" style="--delay: 2">
+                        <strong>Generalizability:</strong> Results applicable across transformer architectures
+                    </div>
+                    <div class="insight-card" style="--delay: 3">
+                        <strong>Practical Value:</strong> Clear deployment recommendations for industry
+                    </div>
+                </div>
+            </div>
+            
+            <div class="key-finding">
+                Industry Relevance: 5.50% efficiency improvement + Scalability + Sustainability + State-of-the-art performance
+            </div>
+        </div>
+
+        <!-- Slide 15: Limitations & Future Work -->
+        <div class="slide">
+            <h2>Limitations & Future Work</h2>
+            
+            <div class="content-grid">
+                <div class="content-column">
+                    <h3>Current Limitations</h3>
+                    <div class="insight-card" style="--delay: 0">
+                        <strong>Limited Scope:</strong> Three architectures, two optimizers
+                    </div>
+                    <div class="insight-card" style="--delay: 1">
+                        <strong>Training Duration:</strong> Short training (3 epochs) for comprehensive analysis
+                    </div>
+                    <div class="insight-card" style="--delay: 2">
+                        <strong>Hyperparameter Space:</strong> Limited exploration of optimizer-specific parameters
+                    </div>
+                    <div class="insight-card" style="--delay: 3">
+                        <strong>Dataset Coverage:</strong> Focus on English IR datasets
+                    </div>
+                </div>
+                
+                <div class="content-column">
+                    <h3>Future Research Directions</h3>
+                    <div class="highlight-box">
+                        <h4>Immediate Extensions</h4>
+                        <p>• Comprehensive hyperparameter studies</p>
+                        <p>• Extended training analysis</p>
+                        <p>• Alternative schedulers investigation</p>
+                        <p>• Cross-lingual evaluation</p>
+                    </div>
+                    
+                    <div class="highlight-box">
+                        <h4>Advanced Research Areas</h4>
+                        <p>• Hybrid optimization strategies</p>
+                        <p>• Domain-specific analysis</p>
+                        <p>• Large-scale studies</p>
+                        <p>• Real-world deployment validation</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Key Takeaways & Decision Points -->
+        <div class="slide">
+            <h2>Key Takeaways & Decision Points</h2>
+            
+            <div class="content-grid">
+                <div class="content-column">
+                    <h3>🎯 Major Findings Summary</h3>
+                    <ol class="objectives-list">
+                        <li style="--delay: 0">🏆 <strong>Universal Efficiency:</strong> Lion optimizer reduces GPU usage in 100% of configurations</li>
+                        <li style="--delay: 1">⚖️ <strong>Performance Trade-offs:</strong> Neither optimizer dominates all metrics</li>
+                        <li style="--delay: 2">🔧 <strong>Configuration Critical:</strong> Learning rate and scheduling significantly impact results</li>
+                        <li style="--delay: 3">🚀 <strong>ModernBERT Excellence:</strong> Best overall performance with Lion optimizer</li>
+                        <li style="--delay: 4">💰 <strong>Cost-Effectiveness:</strong> 5.50% average efficiency improvement across models</li>
+                    </ol>
+                </div>
+                
+                <div class="content-column">
+                    <h3>Decision Matrix for Practitioners</h3>
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Priority</th>
+                                <th>Model Choice</th>
+                                <th>Optimizer</th>
+                                <th>Expected Outcome</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Maximum Performance</strong></td>
+                                <td>ModernBERT</td>
+                                <td>Lion</td>
+                                <td>Best metrics + efficiency</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Cost Optimization</strong></td>
+                                <td>GTE</td>
+                                <td>Lion</td>
+                                <td>10.33% resource savings</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Balanced Approach</strong></td>
+                                <td>MiniLM</td>
+                                <td>Lion</td>
+                                <td>Good performance + efficiency</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Risk Minimization</strong></td>
+                                <td>Any</td>
+                                <td>AdamW</td>
+                                <td>Established, reliable results</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="key-finding">
+                Strategic Implications: Establishes Lion as viable alternative + Cost-benefit analysis + Sustainable AI development
+            </div>
+        </div>
+
+        <!-- Slide 17: Questions & Discussion -->
+        <div class="slide">
+            <h1>Thank You!</h1>
+            <h2>Questions & Discussion</h2>
+            
+            <div class="content-grid">
+                <div class="content-column">
+                    <h3>Ready for Questions on:</h3>
+                    <div class="highlight-box">
+                        <p>• Experimental methodology and design choices</p>
+                        <p>• Statistical significance of results</p>
+                        <p>• Practical implementation considerations</p>
+                        <p>• Future research directions</p>
+                        <p>• Limitations and validation approaches</p>
+                    </div>
+                </div>
+                
+                <div class="content-column">
+                    <div class="author-info">
+                        <h3>Contact Information</h3>
+                        <p>Shahil Kumar (MML2023008)</p>
+                        <p>Supervisor: Dr. Muneendra Ojha</p>
+                        <p>Department of Information Technology</p>
+                        <p>Indian Institute of Information Technology, Allahabad</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 18: Appendix - Technical Details -->
+        <div class="slide">
+            <h2>Appendix - Technical Details</h2>
+            
+            <div class="content-grid">
+                <div class="content-column">
+                    <h3>Experimental Configuration Details</h3>
+                    <div class="highlight-box">
+                        <p><strong>Batch Size:</strong> 16 per GPU (48 total across 3 GPUs)</p>
+                        <p><strong>Training Steps:</strong> ~2000 steps per epoch</p>
+                        <p><strong>Evaluation Frequency:</strong> Every 50 steps</p>
+                        <p><strong>Hardware:</strong> 3 × NVIDIA L40S GPUs (48GB VRAM each)</p>
+                        <p><strong>Software Stack:</strong> PyTorch, Transformers, Weights & Biases</p>
+                    </div>
+                    
+                    <h3>Dataset Statistics</h3>
+                    <div class="highlight-box">
+                        <p><strong>MS MARCO Training:</strong> ~502,939 query-passage pairs</p>
+                        <p><strong>TREC DL 2019:</strong> 43 queries, 200 passages per query</p>
+                        <p><strong>Evaluation Metrics:</strong> 6 comprehensive IR metrics per experiment</p>
+                    </div>
+                </div>
+                
+                <div class="content-column">
+                    <h3>Hyperparameter Settings</h3>
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>AdamW</th>
+                                <th>Lion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Learning Rate</strong></td>
+                                <td>2e-5 (standard)</td>
+                                <td>2e-5 (2e-6 for ModernBERT)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Weight Decay</strong></td>
+                                <td>0.01</td>
+                                <td>0.01</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Beta1</strong></td>
+                                <td>0.9</td>
+                                <td>0.9</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Beta2</strong></td>
+                                <td>0.999</td>
+                                <td>0.99</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Scheduler</strong></td>
+                                <td>Linear</td>
+                                <td>Cosine Annealing (ModernBERT)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const progressBar = document.getElementById('progressBar');
+        const slideCounter = document.getElementById('slideCounter');
+
+        function updateSlideCounter() {
+            slideCounter.textContent = `${currentSlide + 1} / ${totalSlides}`;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function showSlide(n) {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active', 'prev');
+                if (index === n) {
+                    slide.classList.add('active');
+                } else if (index < n) {
+                    slide.classList.add('prev');
+                }
+            });
+            
+            updateSlideCounter();
+            updateProgressBar();
+            updateNavigationButtons();
+        }
+
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                if (currentSlide < totalSlides - 1) {
+                    changeSlide(1);
+                }
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                if (currentSlide > 0) {
+                    changeSlide(-1);
+                }
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                currentSlide = 0;
+                showSlide(currentSlide);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Touch/swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0 && currentSlide < totalSlides - 1) {
+                    // Swipe left - next slide
+                    changeSlide(1);
+                } else if (diff < 0 && currentSlide > 0) {
+                    // Swipe right - previous slide
+                    changeSlide(-1);
+                }
+            }
+        }
+
+        // Auto-play functionality (optional)
+        let autoPlayInterval;
+        const autoPlayDelay = 30000; // 30 seconds per slide
+
+        function startAutoPlay() {
+            autoPlayInterval = setInterval(() => {
+                if (currentSlide < totalSlides - 1) {
+                    changeSlide(1);
+                } else {
+                    stopAutoPlay();
+                }
+            }, autoPlayDelay);
+        }
+
+        function stopAutoPlay() {
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+            }
+        }
+
+        // Pause auto-play on user interaction
+        document.addEventListener('click', stopAutoPlay);
+        document.addEventListener('keydown', stopAutoPlay);
+        document.addEventListener('touchstart', stopAutoPlay);
+
+        // Initialize presentation
+        showSlide(0);
+        
+        // Uncomment the next line to enable auto-play
+        // startAutoPlay();
+
+        // Add number key navigation (1-9 for quick slide access)
+        document.addEventListener('keydown', function(e) {
+            const num = parseInt(e.key);
+            if (num >= 1 && num <= 9 && num <= totalSlides) {
+                currentSlide = num - 1;
+                showSlide(currentSlide);
+                stopAutoPlay();
+            }
+        });
+
+        // Fullscreen toggle (F11 or F key)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'f' || e.key === 'F') {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
