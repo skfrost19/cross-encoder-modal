@@ -30,66 +30,66 @@ The cross-encoder architecture follows a structured approach to relevance modeli
     \item \textbf{Score Normalization}: Sigmoid activation ensures scores fall within [0,1] range for ranking
 \end{enumerate}
 
-\subsection{Model Architecture Specifications}
+% \subsection{Model Architecture Specifications}
 
-Three distinct transformer architectures were selected to represent different efficiency-effectiveness trade-offs:
+% Three distinct transformer architectures were selected to represent different efficiency-effectiveness trade-offs:
 
-\subsubsection{MiniLM-L12-H384-uncased}
+% \subsubsection{MiniLM-L12-H384-uncased}
 
-MiniLM \cite{wang2020minilm} represents an efficient architecture designed through knowledge distillation:
+% MiniLM \cite{wang2020minilm} represents an efficient architecture designed through knowledge distillation:
 
-\textbf{Architectural Parameters}:
-\begin{itemize}
-    \item Hidden dimensions: 384
-    \item Number of layers: 12
-    \item Attention heads: 12
-    \item Maximum sequence length: 512 tokens
-    \item Parameter count: ~33M parameters
-    \item Vocabulary size: 30,522 tokens
-\end{itemize}
+% \textbf{Architectural Parameters}:
+% \begin{itemize}
+%     \item Hidden dimensions: 384
+%     \item Number of layers: 12
+%     \item Attention heads: 12
+%     \item Maximum sequence length: 512 tokens
+%     \item Parameter count: ~33M parameters
+%     \item Vocabulary size: 30,522 tokens
+% \end{itemize}
 
-\textbf{Design Philosophy}: MiniLM achieves efficiency through knowledge distillation from larger teacher models while maintaining competitive performance. The reduced hidden dimensions and moderate layer count make it suitable for resource-constrained scenarios while preserving essential language understanding capabilities.
+% \textbf{Design Philosophy}: MiniLM achieves efficiency through knowledge distillation from larger teacher models while maintaining competitive performance. The reduced hidden dimensions and moderate layer count make it suitable for resource-constrained scenarios while preserving essential language understanding capabilities.
 
-\subsubsection{GTE-multilingual-base}
+% \subsubsection{GTE-multilingual-base}
 
-The General Text Embeddings (GTE) model \cite{li2023towards} extends capabilities to multilingual contexts with enhanced capacity:
+% The General Text Embeddings (GTE) model \cite{li2023towards} extends capabilities to multilingual contexts with enhanced capacity:
 
-\textbf{Architectural Parameters}:
-\begin{itemize}
-    \item Hidden dimensions: 768
-    \item Number of layers: 12
-    \item Attention heads: 12
-    \item Maximum sequence length: 8192 tokens
-    \item Parameter count: ~305M parameters
-    \item Vocabulary size: 250,048 tokens
-    \item Multilingual vocabulary support
-\end{itemize}
+% \textbf{Architectural Parameters}:
+% \begin{itemize}
+%     \item Hidden dimensions: 768
+%     \item Number of layers: 12
+%     \item Attention heads: 12
+%     \item Maximum sequence length: 8192 tokens
+%     \item Parameter count: ~305M parameters
+%     \item Vocabulary size: 250,048 tokens
+%     \item Multilingual vocabulary support
+% \end{itemize}
 
-\textbf{Design Philosophy}: GTE models are trained on diverse, multilingual corpora with multi-stage contrastive learning. The extended context length (8192 tokens) enables processing of longer documents, making it particularly suitable for comprehensive passage analysis and cross-lingual retrieval scenarios.
+% \textbf{Design Philosophy}: GTE models are trained on diverse, multilingual corpora with multi-stage contrastive learning. The extended context length (8192 tokens) enables processing of longer documents, making it particularly suitable for comprehensive passage analysis and cross-lingual retrieval scenarios.
 
-\subsubsection{ModernBERT-base}
+% \subsubsection{ModernBERT-base}
 
-ModernBERT \cite{modernbert} incorporates state-of-the-art architectural innovations for improved efficiency and effectiveness:
+% ModernBERT \cite{modernbert} incorporates state-of-the-art architectural innovations for improved efficiency and effectiveness:
 
-\textbf{Architectural Parameters}:
-\begin{itemize}
-    \item Hidden dimensions: 768
-    \item Number of layers: 22
-    \item Attention heads: 12
-    \item Maximum sequence length: 8192 tokens
-    \item Parameter count: ~149M parameters
-    \item Vocabulary size: 50,368 tokens
-    \item Advanced positional encoding and attention mechanisms
-\end{itemize}
+% \textbf{Architectural Parameters}:
+% \begin{itemize}
+%     \item Hidden dimensions: 768
+%     \item Number of layers: 22
+%     \item Attention heads: 12
+%     \item Maximum sequence length: 8192 tokens
+%     \item Parameter count: ~149M parameters
+%     \item Vocabulary size: 50,368 tokens
+%     \item Advanced positional encoding and attention mechanisms
+% \end{itemize}
 
-\textbf{Architectural Innovations}:
-\begin{enumerate}
-    \item \textbf{Rotary Position Embedding (RoPE)} \cite{su2023roformerenhancedtransformerrotary}: Enables effective handling of longer sequences through relative position encoding
-    \item \textbf{Flash Attention} \cite{dao2022flashattentionfastmemoryefficientexact}: Improves memory efficiency and computational speed for attention operations
-    \item \textbf{GeGLU Activation Functions} \cite{shazeer2020gluvariantsimprovetransformer}: Enhances model expressiveness while maintaining computational efficiency
-\end{enumerate}
+% \textbf{Architectural Innovations}:
+% \begin{enumerate}
+%     \item \textbf{Rotary Position Embedding (RoPE)} \cite{su2023roformerenhancedtransformerrotary}: Enables effective handling of longer sequences through relative position encoding
+%     \item \textbf{Flash Attention} \cite{dao2022flashattentionfastmemoryefficientexact}: Improves memory efficiency and computational speed for attention operations
+%     \item \textbf{GeGLU Activation Functions} \cite{shazeer2020gluvariantsimprovetransformer}: Enhances model expressiveness while maintaining computational efficiency
+% \end{enumerate}
 
-\textbf{Design Philosophy}: ModernBERT represents the current state-of-the-art in encoder-only transformers, combining architectural efficiency improvements with enhanced sequence processing capabilities. The deeper architecture (22 layers) with efficient attention mechanisms enables superior language understanding while maintaining practical computational requirements.
+% \textbf{Design Philosophy}: ModernBERT represents the current state-of-the-art in encoder-only transformers, combining architectural efficiency improvements with enhanced sequence processing capabilities. The deeper architecture (22 layers) with efficient attention mechanisms enables superior language understanding while maintaining practical computational requirements.
 
 %----------------------------------------------------------------------------------------
 
@@ -381,22 +381,22 @@ The evaluation pipeline ensures consistent and fair comparison between optimizer
     \item Cross-validation protocols for robust evaluation
 \end{itemize}
 
-\section{Chapter Summary}
+% \section{Chapter Summary}
 
-This chapter presented a comprehensive methodology for comparing Lion and AdamW optimizers in cross-encoder architectures for information retrieval. The systematic approach encompasses model architecture specifications, optimizer implementations, training frameworks, and evaluation protocols.
+% This chapter presented a comprehensive methodology for comparing Lion and AdamW optimizers in cross-encoder architectures for information retrieval. The systematic approach encompasses model architecture specifications, optimizer implementations, training frameworks, and evaluation protocols.
 
-Key methodological contributions include:
+% Key methodological contributions include:
 
-\begin{itemize}
-    \item \textbf{Systematic Architecture Comparison}: Detailed specifications for MiniLM, GTE, and ModernBERT cross-encoder implementations, enabling fair comparison across different model scales and designs.
+% \begin{itemize}
+%     \item \textbf{Systematic Architecture Comparison}: Detailed specifications for MiniLM, GTE, and ModernBERT cross-encoder implementations, enabling fair comparison across different model scales and designs.
     
-    \item \textbf{Rigorous Optimizer Implementation}: Mathematical formulations and computational implementations of both Lion and AdamW optimizers, ensuring consistent comparison conditions.
+%     \item \textbf{Rigorous Optimizer Implementation}: Mathematical formulations and computational implementations of both Lion and AdamW optimizers, ensuring consistent comparison conditions.
     
-    \item \textbf{Standardized Training Protocol}: Comprehensive training framework with hyperparameter optimization, regularization strategies, and monitoring systems for reproducible results.
+%     \item \textbf{Standardized Training Protocol}: Comprehensive training framework with hyperparameter optimization, regularization strategies, and monitoring systems for reproducible results.
     
-    \item \textbf{Robust Evaluation Framework}: Multi-dataset evaluation protocol using TREC 2019 and MS MARCO benchmarks with statistical significance testing.
-\end{itemize}
+%     \item \textbf{Robust Evaluation Framework}: Multi-dataset evaluation protocol using TREC 2019 and MS MARCO benchmarks with statistical significance testing.
+% \end{itemize}
 
-The methodology establishes a foundation for systematic optimizer comparison in neural information retrieval, providing insights into the relationship between optimization algorithms and model architectures. The next chapter presents the comprehensive experimental results obtained through this methodological framework.
+% The methodology establishes a foundation for systematic optimizer comparison in neural information retrieval, providing insights into the relationship between optimization algorithms and model architectures. The next chapter presents the comprehensive experimental results obtained through this methodological framework.
  
 

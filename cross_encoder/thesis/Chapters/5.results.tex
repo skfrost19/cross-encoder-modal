@@ -62,51 +62,66 @@ To better understand the behavior of each optimizer-model combination, we analyz
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{Figures/modernBERT-Lion-AdamW-eval_loss.png}
-    \caption{ModernBERT: Evaluation Loss Comparison between Lion and AdamW}
-    \label{fig:modernbert_eval_loss}
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/modernBERT-Lion-AdamW-eval_loss.png}
+        \caption{Evaluation Loss Comparison}
+        \label{fig:modernbert_eval_loss}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/modernBERT-Lion-adamW-train_loss.png}
+        \caption{Training Loss Progression}
+        \label{fig:modernbert_train_loss}
+    \end{subfigure}
+    \caption{ModernBERT: Loss Comparison between Lion and AdamW}
+    \label{fig:modernbert_losses}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{Figures/modernBERT-Lion-adamW-train_loss.png}
-    \caption{ModernBERT: Training Loss Progression}
-    \label{fig:modernbert_train_loss}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{Figures/modernBERT-Lion-adamW-lrate.png}
-    \caption{ModernBERT: Learning Rate Schedule}
-    \label{fig:modernbert_lr}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{Figures/modernBERT-Lion-adamW_grad_norm.png}
-    \caption{ModernBERT: Gradient Norm Evolution}
-    \label{fig:modernbert_grad_norm}
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/modernBERT-Lion-adamW-lrate.png}
+        \caption{Learning Rate Schedule}
+        \label{fig:modernbert_lr}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/modernBERT-Lion-adamW_grad_norm.png}
+        \caption{Gradient Norm Evolution}
+        \label{fig:modernbert_grad_norm}
+    \end{subfigure}
+    \caption{ModernBERT: Learning Rate and Gradient Dynamics}
+    \label{fig:modernbert_dynamics}
 \end{figure}
 
 \subsubsection{GTE Training Dynamics}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{Figures/gte_adamW_v_lion_eval_loss.png}
-    \caption{GTE: Evaluation Loss Comparison}
-    \label{fig:gte_eval_loss}
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/gte_adamW_v_lion_eval_loss.png}
+        \caption{Evaluation Loss Comparison}
+        \label{fig:gte_eval_loss}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/gte_adamW_v_lion_train_loss.png}
+        \caption{Training Loss Progression}
+        \label{fig:gte_train_loss}
+    \end{subfigure}
+    \caption{GTE: Loss Comparison between Lion and AdamW}
+    \label{fig:gte_losses}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{Figures/gte_adamW_v_lion_train_loss.png}
-    \caption{GTE: Training Loss Progression}
-    \label{fig:gte_train_loss}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{Figures/gte_adamW_v_lion_grad_norm.png}
+    \includegraphics[width=0.6\textwidth]{Figures/gte_adamW_v_lion_grad_norm.png}
     \caption{GTE: Gradient Norm Evolution}
     \label{fig:gte_grad_norm}
 \end{figure}
@@ -115,21 +130,26 @@ To better understand the behavior of each optimizer-model combination, we analyz
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{Figures/microsoft_MiniLM-L12-H384-uncased_adamW_v_Lion_eval_loss.png}
-    \caption{MiniLM: Evaluation Loss Comparison}
-    \label{fig:minilm_eval_loss}
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/microsoft_MiniLM-L12-H384-uncased_adamW_v_Lion_eval_loss.png}
+        \caption{Evaluation Loss Comparison}
+        \label{fig:minilm_eval_loss}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/microsoft_MiniLM-L12-H384-uncased_adamW_v_Lion_train_loss.png}
+        \caption{Training Loss Progression}
+        \label{fig:minilm_train_loss}
+    \end{subfigure}
+    \caption{MiniLM: Loss Comparison between Lion and AdamW}
+    \label{fig:minilm_losses}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{Figures/microsoft_MiniLM-L12-H384-uncased_adamW_v_Lion_train_loss.png}
-    \caption{MiniLM: Training Loss Progression}
-    \label{fig:minilm_train_loss}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{Figures/microsoft_MiniLM-L12-H384-uncased_adamW_v_Lion_grad_norm.png}
+    \includegraphics[width=0.6\textwidth]{Figures/microsoft_MiniLM-L12-H384-uncased_adamW_v_Lion_grad_norm.png}
     \caption{MiniLM: Gradient Norm Evolution}
     \label{fig:minilm_grad_norm}
 \end{figure}

@@ -86,7 +86,14 @@ bibencoding=utf8,
 
 % \usepackage[english]{babel}
 
+\usepackage{newunicodechar}
+\usepackage{textcomp}
 
+% Fix Unicode characters
+\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{₁}{\ensuremath{_1}}
+\newunicodechar{₂}{\ensuremath{_2}}
+\newunicodechar{—}{\textemdash}
 
 %----------------------------------------------------------------------------------------
 %	MARGIN SETTINGS
